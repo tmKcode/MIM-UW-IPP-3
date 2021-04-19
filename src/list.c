@@ -42,7 +42,7 @@ void listMap(MonoList *head, void (*f)(Mono *)) {
   assert(head != NULL);
 
   while (head->next != NULL) {
-    *f(head->next->content);
+    f(head->next->content);
     head = head->next;
   }
 }
