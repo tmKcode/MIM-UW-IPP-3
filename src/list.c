@@ -4,13 +4,12 @@
 
 static inline MonoList *newMonoList() {
   MonoList *new = malloc(sizeof(MonoList));
-  new->content = NULL;
   new->next = NULL;
 
   return new;
 }
 
-void listInsertNext(MonoList *precedingElement, Mono *content) {
+void listInsertNext(MonoList *precedingElement, Mono content) {
   assert(precedingElement != NULL);
 
   MonoList *newElement = newMonoList();
@@ -23,7 +22,7 @@ void listRemoveNext(MonoList *precedingElement) {
   assert(precedingElement != NULL);
   assert(precedingElement->next != NULL);
 
-  MonoDestroy(precedingElement->next->content);
+  MonoDestroy(&precedingElement->next->content);
 
   MonoList *tmp = precedingElement->next->next;
   free(precedingElement->next);
@@ -33,7 +32,11 @@ void listRemoveNext(MonoList *precedingElement) {
 void listFree(MonoList *head) {
   assert(head != NULL);
 
-  while (head->next != NULL) listRemoveNext(head);
+  while (head->next != NULL) {
+    MonoList *tmp = head->next->next;
+    listRemoveNext(head);
+    head->next = tmp;
+  }
 
   free(head);
 }

@@ -4,8 +4,10 @@
 #include "poly.h"
 
 typedef struct MonoList {
-  struct Mono* content;
+  Mono content;
   struct MonoList* next;
 } MonoList;
+
+void list
 
 #endif //__LIST_H__
