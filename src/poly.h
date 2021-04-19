@@ -35,8 +35,8 @@ typedef struct Poly {
   * W przeciwnym przypadku jest to niepusta lista jednomianów.
   */
   union {
-    poly_coeff_t coeff; ///< współczynnik
-    size_t       size; ///< rozmiar wielomianu, liczba jednomianów
+    poly_coeff_t coeff;///< współczynnik
+    size_t size;       ///< rozmiar wielomianu, liczba jednomianów
   };
   /** To jest lista jednomianów.*/
   MonoList *list;
@@ -49,8 +49,8 @@ typedef struct Poly {
  * wielomianem nad kolejną zmienną @f$x_{i+1}@f$.
  */
 typedef struct Mono {
-  Poly p; ///< współczynnik
-  poly_exp_t exp; ///< wykładnik
+  Poly p;        ///< współczynnik
+  poly_exp_t exp;///< wykładnik
 } Mono;
 
 /**
@@ -58,9 +58,7 @@ typedef struct Mono {
  * @param[in] m : jednomian
  * @return wartość wykładnika jednomianu
  */
-static inline poly_exp_t MonoGetExp(const Mono *m) {
-  return m->exp;
-}
+static inline poly_exp_t MonoGetExp(const Mono *m) { return m->exp; }
 
 /**
  * Tworzy wielomian, który jest współczynnikiem (wielomian stały).
@@ -68,16 +66,14 @@ static inline poly_exp_t MonoGetExp(const Mono *m) {
  * @return wielomian
  */
 static inline Poly PolyFromCoeff(poly_coeff_t c) {
-  return (Poly) {.coeff = c, .arr = NULL};
+  return (Poly){.coeff = c, .arr = NULL};
 }
 
 /**
  * Tworzy wielomian tożsamościowo równy zeru.
  * @return wielomian
  */
-static inline Poly PolyZero(void) {
-  return PolyFromCoeff(0);
-}
+static inline Poly PolyZero(void) { return PolyFromCoeff(0); }
 
 static inline bool PolyIsZero(const Poly *p);
 
@@ -90,7 +86,7 @@ static inline bool PolyIsZero(const Poly *p);
  */
 static inline Mono MonoFromPoly(const Poly *p, poly_exp_t n) {
   assert(n == 0 || !PolyIsZero(p));
-  return (Mono) {.p = *p, .exp = n};
+  return (Mono){.p = *p, .exp = n};
 }
 
 /**
@@ -98,9 +94,7 @@ static inline Mono MonoFromPoly(const Poly *p, poly_exp_t n) {
  * @param[in] p : wielomian
  * @return Czy wielomian jest współczynnikiem?
  */
-static inline bool PolyIsCoeff(const Poly *p) {
-  return p->arr == NULL;
-}
+static inline bool PolyIsCoeff(const Poly *p) { return p->arr == NULL; }
 
 /**
  * Sprawdza, czy wielomian jest tożsamościowo równy zeru.
@@ -121,9 +115,7 @@ void PolyDestroy(Poly *p);
  * Usuwa jednomian z pamięci.
  * @param[in] m : jednomian
  */
-static inline void MonoDestroy(Mono *m) {
-  PolyDestroy(&m->p);
-}
+static inline void MonoDestroy(Mono *m) { PolyDestroy(&m->p); }
 
 /**
  * Robi pełną, głęboką kopię wielomianu.
@@ -138,7 +130,7 @@ Poly PolyClone(const Poly *p);
  * @return skopiowany jednomian
  */
 static inline Mono MonoClone(const Mono *m) {
-  return (Mono) {.p = PolyClone(&m->p), .exp = m->exp};
+  return (Mono){.p = PolyClone(&m->p), .exp = m->exp};
 }
 
 /**
