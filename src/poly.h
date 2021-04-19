@@ -37,8 +37,8 @@ typedef struct Poly {
     poly_coeff_t coeff; ///< współczynnik
     size_t       size; ///< rozmiar wielomianu, liczba jednomianów
   };
-  /** To jest tablica przechowująca listę jednomianów. */
-  struct Mono *arr;
+  /** To jest lista jednomianów (wskaźnik na pierwszy element). */
+  struct Mono *list;
 } Poly;
 
 /**
@@ -46,10 +46,14 @@ typedef struct Poly {
  * Jednomian ma postać @f$px_i^n@f$.
  * Współczynnik @f$p@f$ może też być
  * wielomianem nad kolejną zmienną @f$x_{i+1}@f$.
+ * Jeżeli 'next == NULL', jednomian jest ostatnim elementem listy.
+ * W przeciwnym przypadku jest to wskaźnik na kolejny jednomian w liście.
  */
 typedef struct Mono {
   Poly p; ///< współczynnik
   poly_exp_t exp; ///< wykładnik
+
+  struct Mono* next; ///< wskaźnik
 } Mono;
 
 /**
