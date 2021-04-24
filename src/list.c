@@ -15,7 +15,7 @@ static inline MonoList *newMonoList() {
   return newList;
 }
 
-static inline void listNext(MonoList **element) {*element = (*element)->next;}
+static inline void listNext(MonoList **element) { *element = (*element)->next; }
 
 void listInsertNext(MonoList *precedingElement, Mono content) {
   assert(precedingElement != NULL);
