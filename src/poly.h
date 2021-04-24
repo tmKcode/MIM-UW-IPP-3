@@ -23,6 +23,17 @@ typedef int poly_exp_t;
 struct Mono;
 
 /**
+ * To jest struktura przechowująca jednomian.
+ * Jednomian ma postać @f$px_i^n@f$.
+ * Współczynnik @f$p@f$ może też być
+ * wielomianem nad kolejną zmienną @f$x_{i+1}@f$.
+ */
+typedef struct Mono {
+  Poly p;        ///< współczynnik
+  poly_exp_t exp;///< wykładnik
+} Mono;
+
+/**
  * To jest struktura przechowująca wielomian.
  * Wielomian jest albo liczbą całkowitą, czyli wielomianem stałym
  * (wtedy `arr == NULL`), albo niepustą listą jednomianów (wtedy `arr != NULL`).
@@ -43,17 +54,6 @@ typedef struct Poly {
 } Poly;
 
 /**
- * To jest struktura przechowująca jednomian.
- * Jednomian ma postać @f$px_i^n@f$.
- * Współczynnik @f$p@f$ może też być
- * wielomianem nad kolejną zmienną @f$x_{i+1}@f$.
- */
-typedef struct Mono {
-  Poly p;        ///< współczynnik
-  poly_exp_t exp;///< wykładnik
-} Mono;
-
-/**
  * Daje wartość wykładnika jendomianu.
  * @param[in] m : jednomian
  * @return wartość wykładnika jednomianu
@@ -66,7 +66,7 @@ static inline poly_exp_t MonoGetExp(const Mono *m) { return m->exp; }
  * @return wielomian
  */
 static inline Poly PolyFromCoeff(poly_coeff_t c) {
-  return (Poly){.coeff = c, .arr = NULL};
+  return (Poly){.coeff = c, .list = NULL};
 }
 
 /**
@@ -94,7 +94,7 @@ static inline Mono MonoFromPoly(const Poly *p, poly_exp_t n) {
  * @param[in] p : wielomian
  * @return Czy wielomian jest współczynnikiem?
  */
-static inline bool PolyIsCoeff(const Poly *p) { return p->arr == NULL; }
+static inline bool PolyIsCoeff(const Poly *p) { return p->list == NULL; }
 
 /**
  * Sprawdza, czy wielomian jest tożsamościowo równy zeru.

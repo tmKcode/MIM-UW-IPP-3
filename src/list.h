@@ -8,6 +8,6 @@ typedef struct MonoList {
   struct MonoList* next;
 } MonoList;
 
-void list
+void listFree(MonoList *head);
 
 #endif //__LIST_H__
