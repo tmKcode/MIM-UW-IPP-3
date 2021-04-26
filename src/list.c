@@ -3,9 +3,9 @@
 #include <stdlib.h>
 
 #define CHECK_PTR(p)                                                           \
-    do {                                                                       \
-        if (p == NULL) { exit(1); }                                            \
-    } while (0)
+  do {                                                                         \
+    if (p == NULL) { exit(1); }                                                \
+  } while (0)
 
 static inline MonoList *newMonoList() {
   MonoList *newList = malloc(sizeof(MonoList));
@@ -49,7 +49,7 @@ void listFree(MonoList *head) {
   free(head);
 }
 
-void listIter(MonoList *head, void (*f)(Mono)) {
+void listIter(MonoList *head, void (*f)(Mono *)) {
   assert(head != NULL);
 
   while (head->next != NULL) {
@@ -58,7 +58,7 @@ void listIter(MonoList *head, void (*f)(Mono)) {
   }
 }
 
-void listFold(MonoList *head, void (*f)(Mono, void *), void *acc) {
+void listFold(MonoList *head, void (*f)(Mono *, void *), void *acc) {
   assert(head != NULL);
 
   while (head->next != NULL) {

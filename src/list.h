@@ -10,4 +10,6 @@ typedef struct MonoList {
 
 void listFree(MonoList *head);
 
+void listIter(MonoList *head, void (*f)(Mono *));
+
 #endif //__LIST_H__
