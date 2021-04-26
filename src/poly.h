@@ -36,13 +36,13 @@ typedef struct Mono {
 /**
  * To jest struktura przechowująca wielomian.
  * Wielomian jest albo liczbą całkowitą, czyli wielomianem stałym
- * (wtedy `arr == NULL`), albo niepustą listą jednomianów (wtedy `arr != NULL`).
+ * (wtedy `list == NULL`), albo niepustą listą jednomianów (wtedy `arr != NULL`).
  */
 typedef struct Poly {
   /**
   * To jest unia przechowująca współczynnik wielomianu lub
   * liczbę jednomianów w wielomianie.
-  * Jeżeli `arr == NULL`, wtedy jest to współczynnik będący liczbą całkowitą.
+  * Jeżeli `list == NULL`, wtedy jest to współczynnik będący liczbą całkowitą.
   * W przeciwnym przypadku jest to niepusta lista jednomianów.
   */
   union {

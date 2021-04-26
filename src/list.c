@@ -7,7 +7,7 @@
     if (p == NULL) { exit(1); }                                                \
   } while (0)
 
-static inline MonoList *newMonoList() {
+MonoList *newMonoList() {
   MonoList *newList = malloc(sizeof(MonoList));
   CHECK_PTR(newList);
   newList->next = NULL;
@@ -16,6 +16,13 @@ static inline MonoList *newMonoList() {
 }
 
 static inline void listNext(MonoList **element) { *element = (*element)->next; }
+
+Mono listNextContent(MonoList *precedingElement) {
+  assert(precedingElement != NULL);
+  assert(precedingElement->next != NULL);
+
+  return(precedingElement->next->content);
+}
 
 void listInsertNext(MonoList *precedingElement, Mono content) {
   assert(precedingElement != NULL);
@@ -41,15 +48,13 @@ void listFree(MonoList *head) {
   assert(head != NULL);
 
   while (head->next != NULL) {
-    MonoList *tmp = head->next->next;
     listRemoveNext(head);
-    head->next = tmp;
   }
 
   free(head);
 }
 
-void listIter(MonoList *head, void (*f)(Mono *)) {
+void listIter(MonoList *head, void (*f)(struct Mono *)) {
   assert(head != NULL);
 
   while (head->next != NULL) {
@@ -66,7 +71,7 @@ void listFold(MonoList *head, void (*f)(Mono *, void *), void *acc) {
     head = head->next;
   }
 }
-
+// Modify to create deep copy.
 void listCopy(MonoList *src, MonoList *dest) {
   assert(src != NULL);
   assert(dest != NULL);
