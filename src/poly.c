@@ -1,5 +1,5 @@
 #include "poly.h"
-#include "list.h"
+#include "monolist.h"
 
 void PolyDestroy(Poly *p) {
   if (!PolyIsCoeff(p)) {
@@ -21,15 +21,6 @@ Poly PolyClone(const Poly *p) {
   else {
     assert(p->list->next != NULL);
 
-    MonoList *list = newMonoList();
-    MonoList *iterSrc = p->list;
-    MonoList *iterDest = list;
-    while (iterSrc->next != NULL) {
-      listInsertNext(iterDest, MonoClone(&listNextContent(iterSrc)));
-      iterSrc = iterSrc->next;
-      iterDest = iterDest->next;
-    }
-
-    return (Poly){.coeff = p->coeff, .list = list};
+    return (Poly){.coeff = p->coeff, .list = listClone(p->list)};
   }
 }

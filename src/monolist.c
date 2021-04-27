@@ -1,4 +1,4 @@
-#include "list.h"
+#include "monolist.h"
 #include "poly.h"
 #include <stdlib.h>
 
@@ -15,13 +15,14 @@ MonoList *newMonoList() {
   return newList;
 }
 
+//rm
 static inline void listNext(MonoList **element) { *element = (*element)->next; }
 
-Mono listNextContent(MonoList *precedingElement) {
+Mono *listNextContent(MonoList *precedingElement) {
   assert(precedingElement != NULL);
   assert(precedingElement->next != NULL);
 
-  return(precedingElement->next->content);
+  return(&(precedingElement->next->content));
 }
 
 void listInsertNext(MonoList *precedingElement, Mono content) {
@@ -71,15 +72,17 @@ void listFold(MonoList *head, void (*f)(Mono *, void *), void *acc) {
     head = head->next;
   }
 }
-// Modify to create deep copy.
-void listCopy(MonoList *src, MonoList *dest) {
+//Deep copy.
+MonoList *listClone(MonoList *src) {
   assert(src != NULL);
-  assert(dest != NULL);
 
+  MonoList *copy = newMonoList();
+  MonoList *copyIter = copy;
   while (src->next != NULL) {
-    listInsertNext(dest, src->next->content);
-
+    listInsertNext(copyIter, MonoClone(listNextContent(src)));
     src = src->next;
-    dest = dest->next;
+    copyIter = copyIter->next;
   }
+
+  return copy;
 }
