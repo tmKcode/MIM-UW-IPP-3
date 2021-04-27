@@ -17,7 +17,7 @@ void listFree(MonoList *head);
 
 void listInsertNext(MonoList *precedingElement, Mono content);
 
-void listRemoveNext(MonoList *precedingElement);
+void listFreeNext(MonoList *precedingElement);
 
 MonoList *listClone(MonoList *src);
 

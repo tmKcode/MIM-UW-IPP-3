@@ -34,11 +34,9 @@ void listInsertNext(MonoList *precedingElement, Mono content) {
   precedingElement->next = newElement;
 }
 
-void listRemoveNext(MonoList *precedingElement) {
+void listFreeNext(MonoList *precedingElement) {
   assert(precedingElement != NULL);
   assert(precedingElement->next != NULL);
-
-  MonoDestroy(&precedingElement->next->content);
 
   MonoList *tmp = precedingElement->next->next;
   free(precedingElement->next);
@@ -48,8 +46,7 @@ void listRemoveNext(MonoList *precedingElement) {
 void listFree(MonoList *head) {
   assert(head != NULL);
 
-  while (head->next != NULL) {
-    listRemoveNext(head);
+  while (head->next != NULL) { listFreeNext(head);
   }
 
   free(head);
