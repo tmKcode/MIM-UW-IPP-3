@@ -69,21 +69,21 @@ static bool TestAddMonos(size_t count, Mono monos[], Poly res) {
 //    return TestOp(a, b, res, PolyMul);
 //}
 //
-//static bool TestSub(Poly a, Poly b, Poly res) {
-//    return TestOp(a, b, res, PolySub);
-//}
-//
-//static bool TestDegBy(Poly a, size_t var_idx, poly_exp_t res) {
-//    bool is_eq = PolyDegBy(&a, var_idx) == res;
-//    PolyDestroy(&a);
-//    return is_eq;
-//}
-//
-//static bool TestDeg(Poly a, poly_exp_t res) {
-//    bool is_eq = PolyDeg(&a) == res;
-//    PolyDestroy(&a);
-//    return is_eq;
-//}
+static bool TestSub(Poly a, Poly b, Poly res) {
+    return TestOp(a, b, res, PolySub);
+}
+
+static bool TestDegBy(Poly a, size_t var_idx, poly_exp_t res) {
+    bool is_eq = PolyDegBy(&a, var_idx) == res;
+    PolyDestroy(&a);
+    return is_eq;
+}
+
+static bool TestDeg(Poly a, poly_exp_t res) {
+    bool is_eq = PolyDeg(&a) == res;
+    PolyDestroy(&a);
+    return is_eq;
+}
 
 static bool TestEq(Poly a, Poly b, bool res) {
     bool is_eq = PolyIsEq(&a, &b) == res;
@@ -188,44 +188,44 @@ static bool SimpleAddMonosTest(void) {
 //    return res;
 //}
 //
-//static bool SimpleNegTest(void) {
-//    Poly a = P(P(C(1), 0, C(2), 2), 0, P(C(1), 1), 1, C(1), 2);
-//    Poly b = PolyNeg(&a);
-//    Poly c = P(P(C(-1), 0, C(-2), 2), 0, P(C(-1), 1), 1, C(-1), 2);
-//    bool is_eq = PolyIsEq(&b, &c);
-//    PolyDestroy(&a);
-//    PolyDestroy(&b);
-//    PolyDestroy(&c);
-//    return is_eq;
-//}
-//
-//static bool SimpleSubTest(void) {
-//    return TestSub(
-//            P(P(C(1), 2), 0, P(C(2), 1), 1, C(1), 2),
-//            P(P(C(1), 2), 0, P(C(-1), 0, C(-2), 1, C(-1), 2), 1, C(1), 2),
-//            P(P(C(1), 0, C(4), 1, C(1), 2), 1));
-//}
+static bool SimpleNegTest(void) {
+    Poly a = P(P(C(1), 0, C(2), 2), 0, P(C(1), 1), 1, C(1), 2);
+    Poly b = PolyNeg(&a);
+    Poly c = P(P(C(-1), 0, C(-2), 2), 0, P(C(-1), 1), 1, C(-1), 2);
+    bool is_eq = PolyIsEq(&b, &c);
+    PolyDestroy(&a);
+    PolyDestroy(&b);
+    PolyDestroy(&c);
+    return is_eq;
+}
+
+static bool SimpleSubTest(void) {
+    return TestSub(
+            P(P(C(1), 2), 0, P(C(2), 1), 1, C(1), 2),
+            P(P(C(1), 2), 0, P(C(-1), 0, C(-2), 1, C(-1), 2), 1, C(1), 2),
+            P(P(C(1), 0, C(4), 1, C(1), 2), 1));
+}
 
 #define POLY_P P(P(C(1), 3), 0, P(C(1), 2), 2, C(1), 3)
 
-//static bool SimpleDegByTest(void) {
-//    bool res = true;
-//    res &= TestDegBy(C(0), 1, -1);
-//    res &= TestDegBy(C(1), 0, 0);
-//    res &= TestDegBy(P(C(1), 1), 1, 0);
-//    res &= TestDegBy(POLY_P, 0, 3);
-//    res &= TestDegBy(POLY_P, 1, 3);
-//    return res;
-//}
-//
-//static bool SimpleDegTest(void) {
-//    bool res = true;
-//    res &= TestDeg(C(0), -1);
-//    res &= TestDeg(C(1), 0);
-//    res &= TestDeg(P(C(1), 1), 1);
-//    res &= TestDeg(POLY_P, 4);
-//    return res;
-//}
+static bool SimpleDegByTest(void) {
+    bool res = true;
+    res &= TestDegBy(C(0), 1, -1);
+    res &= TestDegBy(C(1), 0, 0);
+    res &= TestDegBy(P(C(1), 1), 1, 0);
+    res &= TestDegBy(POLY_P, 0, 3);
+    res &= TestDegBy(POLY_P, 1, 3);
+    return res;
+}
+
+static bool SimpleDegTest(void) {
+    bool res = true;
+    res &= TestDeg(C(0), -1);
+    res &= TestDeg(C(1), 0);
+    res &= TestDeg(P(C(1), 1), 1);
+    res &= TestDeg(POLY_P, 4);
+    return res;
+}
 
 static bool SimpleIsEqTest(void) {
     bool res = true;
@@ -270,10 +270,10 @@ int main() {
     assert(SimpleAddTest());
     assert(SimpleAddMonosTest());
 //    assert(SimpleMulTest());
-//    assert(SimpleNegTest());
-//    assert(SimpleSubTest());
-//    assert(SimpleDegByTest());
-//    assert(SimpleDegTest());
+    assert(SimpleNegTest());
+    assert(SimpleSubTest());
+    assert(SimpleDegByTest());
+    assert(SimpleDegTest());
     assert(SimpleIsEqTest());
 //    assert(SimpleAtTest());
 //    assert(OverflowTest());

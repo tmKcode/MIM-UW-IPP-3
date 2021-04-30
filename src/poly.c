@@ -195,6 +195,85 @@ static bool MonoIsEq(const Mono *m, const Mono *n) {
   return m->exp == n->exp && PolyIsEq(&(m->p), &(n->p));
 }
 
+static inline void MonoNegate(Mono *m);
+
+void PolyNegate(Poly *p) {
+  if (PolyIsCoeff(p)) {
+    p->coeff *= -1;
+  }
+  else {
+    (assert(p->list));
+
+    MonoList *iter = p->list;
+    while (iter->next) {
+      MonoNegate(listNextMono(iter));
+
+      iter = iter->next;
+    }
+  }
+}
+
+static inline void MonoNegate(Mono *m) { PolyNegate(&(m->p)); }
+
+Poly PolyNeg(const Poly *p) {
+  Poly result = PolyClone(p);
+  PolyNegate(&result);
+
+  return result;
+}
+
+Poly PolySub(const Poly *p, const Poly *q) {
+  Poly qNeg = PolyNeg(q);
+  Poly result = PolyAdd(p, &qNeg);
+  PolyDestroy(&qNeg);
+
+  return result;
+}
+
+poly_exp_t PolyDegBy(const Poly *p, size_t var_idx) {
+  if (PolyIsCoeff(p)) { return var_idx == 0 ? 0 : -1; }
+  else if (var_idx == 0) { return listNextMono(p->list)->exp; }
+  else {
+    assert(p->list);
+
+    poly_exp_t maxDeg = 0;
+    poly_exp_t newDeg;
+    MonoList *iter = p->list;
+    while(iter->next) {
+      newDeg = PolyDegBy(&(listNextMono(iter)->p), var_idx - 1);
+      if (newDeg > maxDeg) {  maxDeg = newDeg; }
+
+      iter = iter->next;
+    }
+
+    return maxDeg;
+  }
+}
+
+poly_exp_t PolyDeg(const Poly *p) {
+  if (PolyIsZero(p)) { return -1; }
+  else if (PolyIsCoeff(p)) { return 0; }
+  else {
+    assert(p->list);
+
+    poly_exp_t maxDeg = 0;
+    poly_exp_t newDeg;
+    Mono *mono;
+    MonoList *iter = p->list;
+    while (iter->next) {
+      mono = listNextMono(iter);
+      newDeg = mono->exp;
+      newDeg += PolyDeg(&(mono->p));
+
+      if (newDeg > maxDeg) {  maxDeg = newDeg; }
+
+      iter = iter->next;
+    }
+
+    return maxDeg;
+  }
+}
+
 bool PolyIsEq(const Poly *p, const Poly *q) {
   bool pIsCoeff = PolyIsCoeff(p);
   bool qIsCoeff = PolyIsCoeff(q);

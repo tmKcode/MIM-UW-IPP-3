@@ -119,60 +119,60 @@ Poly PolyAddMonos(size_t count, const Mono monos[]);
 // * @return @f$p * q@f$
 // */
 //Poly PolyMul(const Poly *p, const Poly *q);
-//
-///**
-// * Zwraca przeciwny wielomian.
-// * @param[in] p : wielomian @f$p@f$
-// * @return @f$-p@f$
-// */
-//Poly PolyNeg(const Poly *p);
-//
-///**
-// * Odejmuje wielomian od wielomianu.
-// * @param[in] p : wielomian @f$p@f$
-// * @param[in] q : wielomian @f$q@f$
-// * @return @f$p - q@f$
-// */
-//Poly PolySub(const Poly *p, const Poly *q);
-//
-///**
-// * Zwraca stopień wielomianu ze względu na zadaną zmienną (-1 dla wielomianu
-// * tożsamościowo równego zeru). Zmienne indeksowane są od 0.
-// * Zmienna o indeksie 0 oznacza zmienną główną tego wielomianu.
-// * Większe indeksy oznaczają zmienne wielomianów znajdujących się
-// * we współczynnikach.
-// * @param[in] p : wielomian
-// * @param[in] var_idx : indeks zmiennej
-// * @return stopień wielomianu @p p z względu na zmienną o indeksie @p var_idx
-// */
-//poly_exp_t PolyDegBy(const Poly *p, size_t var_idx);
-//
-///**
-// * Zwraca stopień wielomianu (-1 dla wielomianu tożsamościowo równego zeru).
-// * @param[in] p : wielomian
-// * @return stopień wielomianu @p p
-// */
-//poly_exp_t PolyDeg(const Poly *p);
-//
-///**
-// * Sprawdza równość dwóch wielomianów.
-// * @param[in] p : wielomian @f$p@f$
-// * @param[in] q : wielomian @f$q@f$
-// * @return @f$p = q@f$
-// */
-bool PolyIsEq(const Poly *p, const Poly *q);
 
 /**
- * Wylicza wartość wielomianu w punkcie @p x.
- * Wstawia pod pierwszą zmienną wielomianu wartość @p x.
- * W wyniku może powstać wielomian, jeśli współczynniki są wielomianami.
- * Wtedy zmniejszane są o jeden indeksy zmiennych w takim wielomianie.
- * Formalnie dla wielomianu @f$p(x_0, x_1, x_2, \ldots)@f$ wynikiem jest
- * wielomian @f$p(x, x_0, x_1, \ldots)@f$.
+ * Zwraca przeciwny wielomian.
  * @param[in] p : wielomian @f$p@f$
- * @param[in] x : wartość argumentu @f$x@f$
- * @return @f$p(x, x_0, x_1, \ldots)@f$
+ * @return @f$-p@f$
  */
+Poly PolyNeg(const Poly *p);
+
+/**
+ * Odejmuje wielomian od wielomianu.
+ * @param[in] p : wielomian @f$p@f$
+ * @param[in] q : wielomian @f$q@f$
+ * @return @f$p - q@f$
+ */
+Poly PolySub(const Poly *p, const Poly *q);
+
+/**
+ * Zwraca stopień wielomianu ze względu na zadaną zmienną (-1 dla wielomianu
+ * tożsamościowo równego zeru). Zmienne indeksowane są od 0.
+ * Zmienna o indeksie 0 oznacza zmienną główną tego wielomianu.
+ * Większe indeksy oznaczają zmienne wielomianów znajdujących się
+ * we współczynnikach.
+ * @param[in] p : wielomian
+ * @param[in] var_idx : indeks zmiennej
+ * @return stopień wielomianu @p p z względu na zmienną o indeksie @p var_idx
+ */
+poly_exp_t PolyDegBy(const Poly *p, size_t var_idx);
+
+/**
+ * Zwraca stopień wielomianu (-1 dla wielomianu tożsamościowo równego zeru).
+ * @param[in] p : wielomian
+ * @return stopień wielomianu @p p
+ */
+poly_exp_t PolyDeg(const Poly *p);
+
+/**
+ * Sprawdza równość dwóch wielomianów.
+ * @param[in] p : wielomian @f$p@f$
+ * @param[in] q : wielomian @f$q@f$
+ * @return @f$p = q@f$
+ */
+bool PolyIsEq(const Poly *p, const Poly *q);
+
+///**
+// * Wylicza wartość wielomianu w punkcie @p x.
+// * Wstawia pod pierwszą zmienną wielomianu wartość @p x.
+// * W wyniku może powstać wielomian, jeśli współczynniki są wielomianami.
+// * Wtedy zmniejszane są o jeden indeksy zmiennych w takim wielomianie.
+// * Formalnie dla wielomianu @f$p(x_0, x_1, x_2, \ldots)@f$ wynikiem jest
+// * wielomian @f$p(x, x_0, x_1, \ldots)@f$.
+// * @param[in] p : wielomian @f$p@f$
+// * @param[in] x : wartość argumentu @f$x@f$
+// * @return @f$p(x, x_0, x_1, \ldots)@f$
+// */
 //Poly PolyAt(const Poly *p, poly_coeff_t x);
 
 #endif /* __POLY_H__ */
