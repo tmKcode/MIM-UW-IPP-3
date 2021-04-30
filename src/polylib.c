@@ -7,6 +7,18 @@
     if (!p) { exit(1); }                                                        \
   } while (0)
 
+poly_coeff_t poly_coeff_t_pow(poly_coeff_t base, poly_exp_t exp) {
+  poly_coeff_t result = 1;
+  while (exp != 0 ) {
+    if (exp % 2 != 0)
+      result *= base;
+    exp /= 2;
+    base *= base;
+  }
+
+  return result;
+}
+
 MonoList *newMonoList() {
   MonoList *newList = malloc(sizeof(MonoList));
   CHECK_PTR(newList);
@@ -51,6 +63,18 @@ void listFree(MonoList *head) {
   free(head);
 }
 
+MonoList *listFromArray(size_t count, const Mono monos[]) {
+  MonoList *head = newMonoList();
+
+  MonoList *iter = head;
+  for (size_t i = 0; i < count; ++i) {
+    listInsertNext(iter, &monos[i]);
+    iter = iter->next;
+  }
+
+  return head;
+}
+
 //void listIter(MonoList *head, void (*f)(struct Mono *)) {
 //  assert(head);
 //
@@ -91,9 +115,9 @@ MonoList *listUndummify(MonoList *head) {
   return newHead;
 }
 
-MonoList *listDummify(MonoList *head) {
-  MonoList *newHead = newMonoList();
-  newHead->next = head;
-
-  return newHead;
-}
+//MonoList *listDummify(MonoList *head) {
+//  MonoList *newHead = newMonoList();
+//  newHead->next = head;
+//
+//  return newHead;
+//}

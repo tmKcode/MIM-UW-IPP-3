@@ -112,13 +112,13 @@ Poly PolyAdd(const Poly *p, const Poly *q);
  */
 Poly PolyAddMonos(size_t count, const Mono monos[]);
 
-///**
-// * Mnoży dwa wielomiany.
-// * @param[in] p : wielomian @f$p@f$
-// * @param[in] q : wielomian @f$q@f$
-// * @return @f$p * q@f$
-// */
-//Poly PolyMul(const Poly *p, const Poly *q);
+/**
+ * Mnoży dwa wielomiany.
+ * @param[in] p : wielomian @f$p@f$
+ * @param[in] q : wielomian @f$q@f$
+ * @return @f$p * q@f$
+ */
+Poly PolyMul(const Poly *p, const Poly *q);
 
 /**
  * Zwraca przeciwny wielomian.
@@ -162,17 +162,17 @@ poly_exp_t PolyDeg(const Poly *p);
  */
 bool PolyIsEq(const Poly *p, const Poly *q);
 
-///**
-// * Wylicza wartość wielomianu w punkcie @p x.
-// * Wstawia pod pierwszą zmienną wielomianu wartość @p x.
-// * W wyniku może powstać wielomian, jeśli współczynniki są wielomianami.
-// * Wtedy zmniejszane są o jeden indeksy zmiennych w takim wielomianie.
-// * Formalnie dla wielomianu @f$p(x_0, x_1, x_2, \ldots)@f$ wynikiem jest
-// * wielomian @f$p(x, x_0, x_1, \ldots)@f$.
-// * @param[in] p : wielomian @f$p@f$
-// * @param[in] x : wartość argumentu @f$x@f$
-// * @return @f$p(x, x_0, x_1, \ldots)@f$
-// */
-//Poly PolyAt(const Poly *p, poly_coeff_t x);
+/**
+ * Wylicza wartość wielomianu w punkcie @p x.
+ * Wstawia pod pierwszą zmienną wielomianu wartość @p x.
+ * W wyniku może powstać wielomian, jeśli współczynniki są wielomianami.
+ * Wtedy zmniejszane są o jeden indeksy zmiennych w takim wielomianie.
+ * Formalnie dla wielomianu @f$p(x_0, x_1, x_2, \ldots)@f$ wynikiem jest
+ * wielomian @f$p(x, x_0, x_1, \ldots)@f$.
+ * @param[in] p : wielomian @f$p@f$
+ * @param[in] x : wartość argumentu @f$x@f$
+ * @return @f$p(x, x_0, x_1, \ldots)@f$
+ */
+Poly PolyAt(const Poly *p, poly_coeff_t x);
 
 #endif /* __POLY_H__ */

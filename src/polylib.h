@@ -18,19 +18,16 @@ struct MonoList;
 /**
  * To jest struktura przechowująca wielomian.
  * Wielomian jest albo liczbą całkowitą, czyli wielomianem stałym
- * (wtedy `list == NULL`), albo niepustą listą jednomianów (wtedy `arr != NULL`).
+ * (wtedy `list == NULL`),
+ * albo niepustą listą jednomianów (wtedy `list != NULL`).
  */
 typedef struct Poly {
   /**
-  * To jest unia przechowująca współczynnik wielomianu lub
-  * liczbę jednomianów w wielomianie.
+  * To współczynnik wielomianu.
   * Jeżeli `list == NULL`, wtedy jest to współczynnik będący liczbą całkowitą.
-  * W przeciwnym przypadku jest to niepusta lista jednomianów.
+  * W przeciwnym przypadku jest on nieokreślony.
   */
-  union {
-    poly_coeff_t coeff;///< współczynnik
-    size_t size;       ///< rozmiar wielomianu, liczba jednomianów
-  };
+  poly_coeff_t coeff;///< współczynnik
   /** To jest lista jednomianów.*/
   struct MonoList *list;
 } Poly;
@@ -51,6 +48,8 @@ typedef struct MonoList {
   struct MonoList* next;
 } MonoList;
 
+poly_coeff_t poly_coeff_t_pow(poly_coeff_t base, poly_exp_t exp);
+
 MonoList *newMonoList();
 
 static inline bool listIsEmpty(MonoList *head) { return !head->next; }
@@ -67,10 +66,12 @@ void listInsertNext(MonoList *precedingElement, const Mono *content);
 
 void listFreeNext(MonoList *precedingElement);
 
+MonoList *listFromArray(size_t count, const Mono monos[]);
+
 MonoList *listClone(MonoList *src);
 
 MonoList *listUndummify(MonoList *head);
 
-MonoList *listDummify(MonoList *head);
+//MonoList *listDummify(MonoList *head);
 
 #endif //__POLYLIB_H__
