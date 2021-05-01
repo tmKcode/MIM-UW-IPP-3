@@ -48,7 +48,7 @@ typedef struct MonoList {
   struct MonoList* next;
 } MonoList;
 
-poly_coeff_t poly_coeff_t_pow(poly_coeff_t base, poly_exp_t exp);
+poly_coeff_t poly_coeff_tPow(poly_coeff_t base, poly_exp_t exp);
 
 MonoList *newMonoList();
 
@@ -62,7 +62,7 @@ Mono *listNextMono(MonoList *precedingElement);
 
 void listFree(MonoList *head);
 
-void listInsertNext(MonoList *precedingElement, const Mono *content);
+void listInsertNext(MonoList *precedingElement, Mono *content);
 
 void listFreeNext(MonoList *precedingElement);
 

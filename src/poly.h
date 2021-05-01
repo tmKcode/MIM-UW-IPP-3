@@ -142,10 +142,10 @@ Poly PolySub(const Poly *p, const Poly *q);
  * Większe indeksy oznaczają zmienne wielomianów znajdujących się
  * we współczynnikach.
  * @param[in] p : wielomian
- * @param[in] var_idx : indeks zmiennej
- * @return stopień wielomianu @p p z względu na zmienną o indeksie @p var_idx
+ * @param[in] varIdx : indeks zmiennej
+ * @return stopień wielomianu @p p z względu na zmienną o indeksie @p varIdx
  */
-poly_exp_t PolyDegBy(const Poly *p, size_t var_idx);
+poly_exp_t PolyDegBy(const Poly *p, size_t varIdx);
 
 /**
  * Zwraca stopień wielomianu (-1 dla wielomianu tożsamościowo równego zeru).

@@ -100,8 +100,11 @@ static void PolyRemoveZeros(Poly *p) {
     MonoList *iter = p->list;
     while (iter && iter->next) {
       MonoRemoveZeros(&(iter->next->m));
-      if (MonoIsZero(&(iter->next->m))) { listFreeNext(iter); }
-      else { iter = iter->next; }
+      if (MonoIsZero(&(iter->next->m))) {
+        listFreeNext(iter);
+      } else {
+        iter = iter->next;
+      }
     }
 
     if (listIsEmpty(p->list)) {
@@ -135,8 +138,7 @@ static void PolyNormalizeConstants(Poly *p) {
       iter = iter->next;
     }
 
-    if (listIsOneElement(p->list) &&
-        MonoIsConstant(&(p->list->next->m))) {
+    if (listIsOneElement(p->list) && MonoIsConstant(&(p->list->next->m))) {
       PolyCoeffy(p);
     }
   }
@@ -147,9 +149,7 @@ static inline void MonoNormalizeConstants(Mono *m) {
 }
 
 Poly PolyAdd(const Poly *p, const Poly *q) {
-  Poly result = PolyZero();
-
-  PolyPlusEqual(&result, p);
+  Poly result = PolyClone(p);
   PolyPlusEqual(&result, q);
 
   PolyRemoveZeros(&result);
@@ -164,46 +164,71 @@ static inline Poly PolyFromMono(Mono *m) {
   return (Poly){.list = new};
 }
 
-Poly PolyAddMonoList(MonoList *monos) {
-  assert(monos);
+//Poly PolyAddMonoList(MonoList *monos) {
+//  assert(monos);
+//
+//  if(!monos->next) { return PolyZero(); }
+//  MonoList *newHead = newMonoList();
+//
+//  MonoList *newIter;
+//  Mono *mono;
+//  Mono *newMono;
+//  while (monos->next) {
+//    newIter = newHead;
+//    mono = listNextMono(monos);
+//    while (newIter->next && listNextMono(newIter)->exp > mono->exp) {
+//      newMono = listNextMono(newIter);
+//      newIter = newIter->next;
+//    }
+//    if (!newIter->next || newMono->exp > mono->exp) {
+//      listInsertNext(newIter, mono);
+//    }
+//    else {
+//      PolyPlusEqual(&(newMono->p), &(mono->p));
+//      MonoDestroy(mono);
+//    }
+//
+//    monos = monos->next;
+//  }
+//
+//  Poly result = (Poly){.list = newHead};
+//  PolyRemoveZeros(&result);
+//  PolyNormalizeConstants(&result);
+//
+//  return result;
+//}
 
-  if(!monos->next) { return PolyZero(); }
-  MonoList *newHead = newMonoList();
-
-  MonoList *newIter;
-  Mono *mono;
-  Mono *newMono;
-  while (monos->next) {
-    newIter = newHead;
-    mono = listNextMono(monos);
-    while (newIter->next && listNextMono(newIter)->exp > mono->exp) {
-      newMono = listNextMono(newIter);
-      newIter = newIter->next;
-    }
-    if (!newIter->next || newMono->exp > mono->exp) {
-      listInsertNext(newIter, mono);
-    }
-    else {
-      PolyPlusEqual(&(newMono->p), &(mono->p));
-      MonoDestroy(mono);
-    }
-
-    monos = monos->next;
+void listInsert(MonoList *head, Mono *mono) {
+  while (head->next && listNextMono(head)->exp > mono->exp) {
+    head = head->next;
   }
 
-  Poly result = (Poly){.list = newHead};
+  if (!head->next || listNextMono(head)->exp < mono->exp) {
+    listInsertNext(head, mono);
+  } else {
+    PolyPlusEqual(&(listNextMono(head)->p), &(mono->p));
+    MonoDestroy(mono);
+  }
+}
+
+Poly PolyAddMonos(size_t count, const Mono monos[]) {
+  if (count == 0) { return PolyZero(); }
+  MonoList *head = newMonoList();
+
+  Mono mono;
+  for (size_t i = 0; i < count; ++i) {
+    mono = monos[i];
+    listInsert(head, &mono);
+  }
+
+  Poly result = (Poly){.list = head};
   PolyRemoveZeros(&result);
   PolyNormalizeConstants(&result);
 
   return result;
 }
 
-Poly PolyAddMonos(size_t count, const Mono monos[]) {
-  MonoList *list = listFromArray(count, monos);
-  Poly result = PolyAddMonoList(list);
-  listFree(list);
-  return result;
-}
+//Poly PolyAddMonos(size_t count, const Mono monos[]) {
 //  if (count == 0) { return PolyZero(); }
 //  MonoList *head = newMonoList();
 //
@@ -231,52 +256,54 @@ Poly PolyAddMonos(size_t count, const Mono monos[]) {
 //  return result;
 //}
 
-static void PolyNormalizeMonos(Poly *p) {
-  if (!PolyIsCoeff(p)) {
-    assert(p->list);
+//static void PolyNormalizeMonos(Poly *p) {
+//  if (!PolyIsCoeff(p)) {
+//    assert(p->list);
+//
+//    MonoList *iter = p->list;
+//    while (iter->next) {
+//      PolyNormalizeConstants(&(listNextMono(iter)->p));
+//
+//      iter = iter->next;
+//    }
+//
+//    Mono *mono;
+//    Mono *nextMono;
+//    iter = p->list;
+//    while (iter->next && iter->next->next) {
+//      mono = listNextMono(iter);
+//      nextMono = listNextMono(iter->next);
+//      if (MonoGetExp(mono) == MonoGetExp(nextMono)) {
+//        PolyPlusEqual(&(mono->p), &(nextMono->p));
+//        MonoDestroy(nextMono);
+//        listFreeNext(iter);
+//      } else {
+//        iter = iter->next;
+//      }
+//    }
+//  }
+//}
 
-    MonoList *iter = p->list;
-    while (iter->next) {
-      PolyNormalizeConstants(&(listNextMono(iter)->p));
+//static void PolyDotEqualConstant(Poly *p, poly_coeff_t c);
 
-      iter = iter->next;
-    }
+//static void PolyMulMerge(Poly *p, const Poly *q);
 
-    Mono *mono;
-    Mono *nextMono;
-    iter = p->list;
-    while (iter->next && iter->next->next) {
-      mono = listNextMono(iter);
-      nextMono = listNextMono(iter->next);
-      if (MonoGetExp(mono) == MonoGetExp(nextMono)) {
-        PolyPlusEqual(&(mono->p), &(nextMono->p));
-        MonoDestroy(nextMono);
-        listFreeNext(iter);
-      }
-      else { iter = iter->next; }
-    }
-  }
-}
-
-static void PolyDotEqualConstant(Poly *p, poly_coeff_t c);
-
-static void PolyMulMerge(Poly *p, const Poly *q);
-
-static void PolyDotEqual(Poly *p, const Poly *q) {
-  bool pIsCoeff = PolyIsCoeff(p);
-  bool qIsCoeff = PolyIsCoeff(q);
-
-  if (pIsCoeff && qIsCoeff) { p->coeff *= q->coeff; }
-  else if (pIsCoeff) {
-    Poly copy = PolyClone(q);
-    PolyDotEqualConstant(&copy, p->coeff);
-    *p = copy;
-  } else if (qIsCoeff) {
-    PolyDotEqualConstant(p, q->coeff);
-  } else {
-    PolyMulMerge(p, q);
-  }
-}
+//static void PolyDotEqual(Poly *p, const Poly *q) {
+//  bool pIsCoeff = PolyIsCoeff(p);
+//  bool qIsCoeff = PolyIsCoeff(q);
+//
+//  if (pIsCoeff && qIsCoeff) {
+//    p->coeff *= q->coeff;
+//  } else if (pIsCoeff) {
+//    Poly copy = PolyClone(q);
+//    PolyDotEqualConstant(&copy, p->coeff);
+//    *p = copy;
+//  } else if (qIsCoeff) {
+//    PolyDotEqualConstant(p, q->coeff);
+//  } else {
+//    PolyMulMerge(p, q);
+//  }
+//}
 
 static void PolyDotEqualConstant(Poly *p, poly_coeff_t c) {
   if (PolyIsCoeff(p)) {
@@ -295,38 +322,100 @@ static void PolyDotEqualConstant(Poly *p, poly_coeff_t c) {
   }
 }
 
-static void PolyMulMerge(Poly *p, const Poly *q) {
+//static void PolyMulMerge(Poly *p, const Poly *q) {
+//  assert(p->list && q->list);
+//
+//  MonoList *pIter = p->list;
+//  MonoList *qIter;
+//  Mono *pMono;
+//  Mono *qMono;
+//  MonoList *new = newMonoList();
+//
+//  while (pIter->next) {
+//    qIter = p->list;
+//    pMono = listNextMono(pIter);
+//
+//    while (qIter->next) {
+//      qMono = listNextMono(qIter);
+//      qMono->exp += qMono->exp;
+//      PolyDotEqual(&(pMono->p), &(qMono->p));
+//
+//      pIter = pIter->next;
+//    }
+//
+//    qIter = qIter->next;
+//  }
+//}
+
+//Poly PolyMul(const Poly *p, const Poly *q) {
+//  Poly result = PolyFromCoeff(1);
+//
+//  PolyDotEqual(&result, p);
+//  PolyDotEqual(&result, q);
+//
+//  PolyNormalizeMonos(&result);
+//  PolyRemoveZeros(&result);
+//  PolyNormalizeConstants(&result);
+//
+//  return result;
+//}
+
+Poly PolyMulMonos(const Poly *p, const Poly *q);
+
+Poly PolyMul(const Poly *p, const Poly *q) {
+  bool pIsCoeff = PolyIsCoeff(p);
+  bool qIsCoeff = PolyIsCoeff(q);
+
+  if (pIsCoeff && qIsCoeff) {
+    return (Poly){.coeff = p->coeff * q->coeff, .list = NULL};
+  } else if (pIsCoeff) {
+    Poly result = PolyClone(q);
+    PolyDotEqualConstant(&result, p->coeff);
+
+    PolyRemoveZeros(&result);
+    PolyNormalizeConstants(&result);
+
+    return result;
+  } else if (qIsCoeff) {
+    Poly result = PolyClone(p);
+    PolyDotEqualConstant(&result, q->coeff);
+
+    PolyRemoveZeros(&result);
+    PolyNormalizeConstants(&result);
+
+    return result;
+  } else {
+    return PolyMulMonos(p, q);
+  }
+}
+
+Poly PolyMulMonos(const Poly *p, const Poly *q) {
   assert(p->list && q->list);
 
-  MonoList *pIter;
-  MonoList *qIter = q->list;
+  Poly result = (Poly){.list = newMonoList()};
+  MonoList *pIter = p->list;
+  MonoList *qIter;
   Mono *pMono;
   Mono *qMono;
-  Poly tmp = PolyZero();
+  Mono subResult;
 
   while (pIter->next) {
-    qIter = p->list;
+    qIter = q->list;
     pMono = listNextMono(pIter);
 
     while (qIter->next) {
       qMono = listNextMono(qIter);
-      qMono->exp += qMono->exp;
-      PolyDotEqual(&(pMono->p), &(qMono->p));
 
-      pIter = pIter->next;
+      subResult = (Mono){.exp = pMono->exp + qMono->exp,
+                         .p = PolyMul(&(pMono->p), &(qMono->p))};
+      listInsert(result.list, &subResult);
+
+      qIter = qIter->next;
     }
 
-    qIter = qIter->next;
+    pIter = pIter->next;
   }
-}
 
-Poly PolyMul(const Poly *p, const Poly *q) {
-  Poly result = PolyFromCoeff(1);
-
-  PolyDotEqual(&result, p);
-  PolyDotEqual(&result, q);
-
-  PolyNormalizeMonos(&result);
   PolyRemoveZeros(&result);
   PolyNormalizeConstants(&result);
 
@@ -338,8 +427,7 @@ static inline void MonoNegate(Mono *m);
 void PolyNegate(Poly *p) {
   if (PolyIsCoeff(p)) {
     p->coeff *= -1;
-  }
-  else {
+  } else {
     (assert(p->list));
 
     MonoList *iter = p->list;
@@ -368,18 +456,20 @@ Poly PolySub(const Poly *p, const Poly *q) {
   return result;
 }
 
-poly_exp_t PolyDegBy(const Poly *p, size_t var_idx) {
-  if (PolyIsCoeff(p)) { return var_idx == 0 ? 0 : -1; }
-  else if (var_idx == 0) { return listNextMono(p->list)->exp; }
-  else {
+poly_exp_t PolyDegBy(const Poly *p, size_t varIdx) {
+  if (PolyIsCoeff(p)) {
+    return varIdx == 0 ? 0 : -1;
+  } else if (varIdx == 0) {
+    return listNextMono(p->list)->exp;
+  } else {
     assert(p->list);
 
     poly_exp_t maxDeg = 0;
     poly_exp_t newDeg;
     MonoList *iter = p->list;
-    while(iter->next) {
-      newDeg = PolyDegBy(&(listNextMono(iter)->p), var_idx - 1);
-      if (newDeg > maxDeg) {  maxDeg = newDeg; }
+    while (iter->next) {
+      newDeg = PolyDegBy(&(listNextMono(iter)->p), varIdx - 1);
+      if (newDeg > maxDeg) { maxDeg = newDeg; }
 
       iter = iter->next;
     }
@@ -389,9 +479,11 @@ poly_exp_t PolyDegBy(const Poly *p, size_t var_idx) {
 }
 
 poly_exp_t PolyDeg(const Poly *p) {
-  if (PolyIsZero(p)) { return -1; }
-  else if (PolyIsCoeff(p)) { return 0; }
-  else {
+  if (PolyIsZero(p)) {
+    return -1;
+  } else if (PolyIsCoeff(p)) {
+    return 0;
+  } else {
     assert(p->list);
 
     poly_exp_t maxDeg = 0;
@@ -403,7 +495,7 @@ poly_exp_t PolyDeg(const Poly *p) {
       newDeg = mono->exp;
       newDeg += PolyDeg(&(mono->p));
 
-      if (newDeg > maxDeg) {  maxDeg = newDeg; }
+      if (newDeg > maxDeg) { maxDeg = newDeg; }
 
       iter = iter->next;
     }
@@ -420,9 +512,11 @@ bool PolyIsEq(const Poly *p, const Poly *q) {
   bool pIsCoeff = PolyIsCoeff(p);
   bool qIsCoeff = PolyIsCoeff(q);
 
-  if (pIsCoeff && qIsCoeff) { return p->coeff == q->coeff; }
-  else if (pIsCoeff || qIsCoeff) { return false; }
-  else {
+  if (pIsCoeff && qIsCoeff) {
+    return p->coeff == q->coeff;
+  } else if (pIsCoeff || qIsCoeff) {
+    return false;
+  } else {
     assert(p->list && q->list);
 
     MonoList *pIter = p->list;
@@ -439,30 +533,32 @@ bool PolyIsEq(const Poly *p, const Poly *q) {
   }
 }
 
-//Poly PolyAt(const Poly *p, poly_coeff_t x) {
-//  if (PolyIsCoeff(p)) { return PolyClone(p); }
-//  else {
-//    assert(p->list);
-//
-//    Poly result = PolyZero();
-//    Mono *mono;
-//    Poly copy;
-//    poly_coeff_t c;
-//    MonoList *iter = p->list;
-//    while (iter->next) {
-//      mono = listNextMono(iter);
-//      c = poly_coeff_t_pow(x, mono->exp);
-//      copy = PolyClone(&(mono->p));
-//
-//      PolyPlusEqualConstant(&copy, c);
-//      PolyPlusEqual(&result, &copy);
-//      PolyDestroy(&copy);
-//
-//      iter = iter->next;
-//    }
-//    PolyRemoveZeros(&result);
-//    PolyNormalizeConstants(&result);
-//
-//    return result;
-//  }
-//}
+Poly PolyAt(const Poly *p, poly_coeff_t x) {
+  if (PolyIsCoeff(p)) { return PolyClone(p); }
+  else if (x == 0) { return PolyZero(); }
+  else {
+    assert(p->list);
+
+    Poly result = PolyZero();
+    MonoList *iter = p->list;
+    Mono *mono;
+    Poly subResult;
+    Poly constant;
+
+    while (iter->next) {
+      mono = listNextMono(iter);
+      constant = PolyFromCoeff(poly_coeff_tPow(x, mono->exp));
+      subResult = PolyMul(&(mono->p), &constant);
+
+      PolyPlusEqual(&result, &subResult);
+      PolyDestroy(&subResult);
+
+      iter = iter->next;
+    }
+
+    PolyRemoveZeros(&result);
+    PolyNormalizeConstants(&result);
+
+    return result;
+  }
+}
