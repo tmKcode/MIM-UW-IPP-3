@@ -535,7 +535,22 @@ bool PolyIsEq(const Poly *p, const Poly *q) {
 
 Poly PolyAt(const Poly *p, poly_coeff_t x) {
   if (PolyIsCoeff(p)) { return PolyClone(p); }
-  else if (x == 0) { return PolyZero(); }
+  else if (x == 0) {
+    MonoList *iter = p->list;
+    Mono mono;
+
+    while (iter->next) {
+      iter = iter->next;
+    }
+
+    mono = iter->m;
+    if (mono.exp == 0) {
+      return PolyClone(&(mono.p));
+    }
+    else {
+      return PolyZero();
+    }
+  }
   else {
     assert(p->list);
 
