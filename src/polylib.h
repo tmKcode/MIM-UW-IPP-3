@@ -50,7 +50,7 @@ typedef struct MonoList {
 
 poly_coeff_t poly_coeff_tPow(poly_coeff_t base, poly_exp_t exp);
 
-MonoList *newMonoList();
+MonoList *NewMonoList();
 
 static inline bool listIsEmpty(MonoList *head) { return !head->next; }
 
@@ -58,19 +58,19 @@ static inline bool listIsOneElement(MonoList *head) {
   return head->next && !head->next->next;
 }
 
-Mono *listNextMono(MonoList *precedingElement);
+Mono *MonoListNextMono(MonoList *precedingElement);
 
-void listFree(MonoList *head);
+void MonoListFree(MonoList *head);
 
-void listInsertNext(MonoList *precedingElement, Mono *content);
+void MonoListInsertNext(MonoList *precedingElement, Mono *content);
 
-void listFreeNext(MonoList *precedingElement);
+void MonoListFreeNext(MonoList *precedingElement);
 
-MonoList *listFromArray(size_t count, const Mono monos[]);
+//MonoList *listFromArray(size_t count, const Mono monos[]);
 
-MonoList *listClone(MonoList *src);
+MonoList *MonoListClone(MonoList *src);
 
-MonoList *listUndummify(MonoList *head);
+MonoList *MonoListRemoveDummy(MonoList *head);
 
 //MonoList *listDummify(MonoList *head);
 

@@ -9,11 +9,61 @@
 #ifndef __POLY_H__
 #define __POLY_H__
 
-#include "polylib.h"
+//#include "polylib.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 
+/** To jest typ reprezentujący współczynniki. */
+typedef long poly_coeff_t;
+
+/** To jest typ reprezentujący wykładniki. */
+typedef int poly_exp_t;
+
+struct Mono;
+
+struct MonoList;
+
+/**
+ * To jest struktura przechowująca wielomian.
+ * Wielomian jest albo liczbą całkowitą, czyli wielomianem stałym
+ * (wtedy `list == NULL`),
+ * albo niepustą listą jednomianów (wtedy `list != NULL`).
+ */
+typedef struct Poly {
+  /**
+  * To współczynnik wielomianu.
+  * Jeżeli `list == NULL`, wtedy jest to współczynnik będący liczbą całkowitą.
+  * W przeciwnym przypadku jest on nieokreślony.
+  */
+  poly_coeff_t coeff;///< współczynnik
+  /**
+   * To jest lista jednomianów.
+   * Jeżeli `list != NULL`, czyli lista jest niepusta,
+   * rozpoczyna się ona od wartownika.
+   */
+  struct MonoList *list;///< lista jednomianów
+} Poly;
+
+/**
+ * To jest struktura przechowująca jednomian.
+ * Jednomian ma postać @f$px_i^n@f$.
+ * Współczynnik @f$p@f$ może też być
+ * wielomianem nad kolejną zmienną @f$x_{i+1}@f$.
+ */
+typedef struct Mono {
+  Poly p;        ///< współczynnik
+  poly_exp_t exp;///< wykładnik
+} Mono;
+
+/**
+ * To jest struktura przechowująca węzeł listy jednomianów.
+ * Listy jednomianów są konstruowane jako jednokierunkowe listy wskaźnikowe.
+ */
+typedef struct MonoList {
+  Mono m;               ///< jednomian
+  struct MonoList* next;///< następny węzeł
+} MonoList;
 
 /**
  * Daje wartość wykładnika jendomianu.

@@ -19,7 +19,7 @@ poly_coeff_t poly_coeff_tPow(poly_coeff_t base, poly_exp_t exp) {
   return result;
 }
 
-MonoList *newMonoList() {
+MonoList *NewMonoList() {
   MonoList *newList = malloc(sizeof(MonoList));
   CHECK_PTR(newList);
   newList->next = NULL;
@@ -27,26 +27,24 @@ MonoList *newMonoList() {
   return newList;
 }
 
-//rm
-static inline void listNext(MonoList **element) { *element = (*element)->next; }
 
-Mono *listNextMono(MonoList *precedingElement) {
+Mono *MonoListNextMono(MonoList *precedingElement) {
   assert(precedingElement);
   assert(precedingElement->next);
 
   return(&(precedingElement->next->m));
 }
 
-void listInsertNext(MonoList *precedingElement, Mono *content) {
+void MonoListInsertNext(MonoList *precedingElement, Mono *content) {
   assert(precedingElement);
 
-  MonoList *newElement = newMonoList();
+  MonoList *newElement = NewMonoList();
   newElement->m = *content;
   newElement->next = precedingElement->next;
   precedingElement->next = newElement;
 }
 
-void listFreeNext(MonoList *precedingElement) {
+void MonoListFreeNext(MonoList *precedingElement) {
   assert(precedingElement);
   assert(precedingElement->next);
 
@@ -55,20 +53,20 @@ void listFreeNext(MonoList *precedingElement) {
   precedingElement->next = tmp;
 }
 
-void listFree(MonoList *head) {
+void MonoListFree(MonoList *head) {
   assert(head);
 
-  while (head->next) { listFreeNext(head); }
+  while (head->next) { MonoListFreeNext(head); }
 
   free(head);
 }
 
 //MonoList *listFromArray(size_t count, const Mono monos[]) {
-//  MonoList *head = newMonoList();
+//  MonoList *head = NewMonoList();
 //
 //  MonoList *iter = head;
 //  for (size_t i = 0; i < count; ++i) {
-//    listInsertNext(iter, &monos[i]);
+//    MonoListInsertNext(iter, &monos[i]);
 //    iter = iter->next;
 //  }
 //
@@ -93,14 +91,14 @@ void listFree(MonoList *head) {
 //  }
 //}
 //Deep copy.
-MonoList *listClone(MonoList *src) {
+MonoList *MonoListClone(MonoList *src) {
   assert(src);
 
-  MonoList *copy = newMonoList();
+  MonoList *copy = NewMonoList();
   MonoList *copyIter = copy;
   while (src->next) {
-    Mono monoCopy = MonoClone(listNextMono(src));
-    listInsertNext(copyIter, &monoCopy);
+    Mono monoCopy = MonoClone(MonoListNextMono(src));
+    MonoListInsertNext(copyIter, &monoCopy);
     src = src->next;
     copyIter = copyIter->next;
   }
@@ -108,7 +106,7 @@ MonoList *listClone(MonoList *src) {
   return copy;
 }
 
-MonoList *listUndummify(MonoList *head) {
+MonoList *MonoListRemoveDummy(MonoList *head) {
   MonoList *newHead = head->next;
   free(head);
 
@@ -118,7 +116,7 @@ MonoList *listUndummify(MonoList *head) {
 
 
 //MonoList *listDummify(MonoList *head) {
-//  MonoList *newHead = newMonoList();
+//  MonoList *newHead = NewMonoList();
 //  newHead->next = head;
 //
 //  return newHead;
