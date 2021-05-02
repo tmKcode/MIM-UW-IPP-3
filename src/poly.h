@@ -9,7 +9,6 @@
 #ifndef __POLY_H__
 #define __POLY_H__
 
-//#include "polylib.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>

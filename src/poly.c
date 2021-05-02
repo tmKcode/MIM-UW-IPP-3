@@ -1,6 +1,5 @@
 #include "poly.h"
 #include <stdlib.h>
-//#include "polylib.h"
 
 #define CHECK_PTR(p)                                                           \
   do {                                                                         \
@@ -472,25 +471,6 @@ static Poly PolyMulMonos(const Poly *p, const Poly *q) {
   return result;
 }
 
-//static inline void MonoNegate(Mono *m);
-//
-//void PolyNegate(Poly *p) {
-//  if (PolyIsCoeff(p)) {
-//    p->coeff *= -1;
-//  } else {
-//    (assert(p->list));
-//
-//    MonoList *iter = p->list;
-//    while (iter->next) {
-//      MonoNegate(MonoListNextMono(iter));
-//
-//      iter = iter->next;
-//    }
-//  }
-//}
-//
-//static inline void MonoNegate(Mono *m) { PolyNegate(&(m->p)); }
-
 Poly PolyNeg(const Poly *p) {
   Poly negOne = PolyFromCoeff(-1);
 
@@ -553,6 +533,12 @@ poly_exp_t PolyDeg(const Poly *p) {
   }
 }
 
+/**
+ * Sprawdza równość dwóch jednomianów.
+ * @param[in] m : jednomian @f$m@f$
+ * @param[in] n : jednomian @f$n@f$
+ * @return @f$m = n@f$
+ */
 static bool MonoIsEq(const Mono *m, const Mono *n) {
   return m->exp == n->exp && PolyIsEq(&(m->p), &(n->p));
 }
