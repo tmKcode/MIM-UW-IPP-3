@@ -1,6 +1,19 @@
+/** @file
+  Implementacja klasy wielomianów rzadkich wielu zmiennych
+
+  @authors Tomasz Ziębowicz <T.Ziebowicz@students.mimuw.edu.pl>
+  Jakub Pawlewicz <pan@mimuw.edu.pl>, Marcin Peczarski <marpe@mimuw.edu.pl>
+  @copyright Uniwersytet Warszawski
+  @date 2021
+*/
 #include "poly.h"
 #include <stdlib.h>
 
+/**
+ * Sprawdza, czy alokacja została poprawnie wykonana.
+ * Jeśli nie, zakańcza wykonywanie programu z kodem @f$1@f$.
+ * @param[in] p : wskaźnik pod którym alokowano pamięć
+ */
 #define CHECK_PTR(p)                                                           \
   do {                                                                         \
     if (!p) { exit(1); }                                                       \
