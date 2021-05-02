@@ -25,7 +25,7 @@
  * @param[in] exp : wykładnik @f$exp@f$
  * @return @f$base^exp@f$
  */
-poly_coeff_t poly_coeff_tPow(poly_coeff_t base, poly_exp_t exp) {
+static poly_coeff_t poly_coeff_tPow(poly_coeff_t base, poly_exp_t exp) {
   poly_coeff_t result = 1;
   while (exp != 0) {
     if (exp % 2 != 0) result *= base;
