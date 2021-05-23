@@ -10,13 +10,12 @@
 #define STACK_H
 
 #define STACK_MINIMUM_CAPACITY 2
-#define STACK_GROWTH_FACTOR 2
+#define STACK_RESIZE_FACTOR 2
 
 #include "poly.h"
 
 #include <stddef.h>
 #include <stdlib.h>
-
 
 typedef struct PolyStack {
   size_t top;
@@ -27,12 +26,14 @@ typedef struct PolyStack {
 
 PolyStack NewPolyStack();
 
-Poly PolyStackPeek(PolyStack* s);
+size_t PolyStackSize(PolyStack *s);
 
-Poly PolyStackPop(PolyStack* s);
+Poly PolyStackPeek(PolyStack *s);
 
-void PolyStackPush(PolyStack* s, Poly* p);
+void PolyStackPop(PolyStack *s);
 
-void PolyStackDestroy(PolyStack* s);
+void PolyStackPush(PolyStack *s, Poly p);
+
+void PolyStackDestroy(PolyStack *s);
 
 #endif // STACK_H

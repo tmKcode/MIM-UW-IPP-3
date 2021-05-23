@@ -8,20 +8,94 @@
 
 #include "stack.h"
 
-PolyStack NewPolyStack() {
-  PolyStack s;
+/**
+ * Sprawdza, czy alokacja została poprawnie wykonana.
+ * Jeśli nie, zakańcza wykonywanie programu z kodem @f$1@f$.
+ * @param[in] p : wskaźnik pod którym alokowano pamięć
+ */
+#define CHECK_PTR(p)                                                           \
+  do {                                                                         \
+    if (!p) {                                                                  \
+      exit(1);                                                                 \
+    }                                                                          \
+  } while (0)
 
-  s.top = -1;
-  s.capacity = STACK_MINIMUM_CAPACITY;
-  s.array = malloc(STACK_MINIMUM_CAPACITY * sizeof(Poly));
+PolyStack NewPolyStack() {
+  PolyStack s =
+      (PolyStack){.top = -1,
+                  .capacity = STACK_MINIMUM_CAPACITY,
+                  .array = malloc(STACK_MINIMUM_CAPACITY * sizeof(Poly))};
+
+  CHECK_PTR(s.array);
 
   return s;
 }
 
-Poly PolyStackPeek(PolyStack* s){}
+size_t PolyStackSize(PolyStack *s) {
+  assert(s);
 
-Poly PolyStackPop(PolyStack* s){}
+  return s->top + 1;
+}
 
-void PolyStackPush(PolyStack* s, Poly* p){}
+static bool PolyStackIsEmpty(PolyStack *s) { return PolyStackSize(s) > 0; }
 
-void PolyStackDestroy(PolyStack* s){}
+Poly PolyStackPeek(PolyStack *s) {
+  assert(!PolyStackIsEmpty(s));
+
+  return s->array[s->top];
+}
+
+static bool PolyStackShouldShrink(PolyStack *s) {
+  size_t size = PolyStackSize(s);
+
+  return size < s->capacity / (STACK_RESIZE_FACTOR * 2) &&
+         size > STACK_MINIMUM_CAPACITY;
+}
+
+static void PolyStackShrink(PolyStack *s) {
+  assert(s);
+
+  s->capacity /= STACK_RESIZE_FACTOR;
+  s->array = realloc(s->array, s->capacity * sizeof(Poly));
+
+  CHECK_PTR(s->array);
+}
+
+void PolyStackPop(PolyStack *s) {
+  assert(!PolyStackIsEmpty(s));
+
+  PolyDestroy(&(s->array[s->top--]));
+
+  if (PolyStackShouldShrink(s)) {
+    PolyStackShrink(s);
+  }
+}
+
+static bool PolyStackShouldGrow(PolyStack *s) {
+  return PolyStackSize(s) == s->capacity;
+}
+
+static void PolyStackGrow(PolyStack *s) {
+  assert(s);
+
+  s->capacity *= STACK_RESIZE_FACTOR;
+  s->array = realloc(s->array, s->capacity * sizeof(Poly));
+
+  CHECK_PTR(s->array);
+}
+
+void PolyStackPush(PolyStack *s, Poly p) {
+  if (PolyStackShouldGrow(s)) {
+    PolyStackGrow(s);
+  }
+
+  s->array[++s->top] = p;
+}
+
+void PolyStackDestroy(PolyStack *s) {
+  while (PolyStackSize(s) > 0) {
+    PolyStackPop(s);
+  }
+
+  free(s->array);
+}
