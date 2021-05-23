@@ -53,14 +53,14 @@ static MonoList *NewMonoList() {
  * @param[in] head : pierwszy węzeł
  * @return Czy lista składa się tylko z wartownika?
  */
-static inline bool listIsEmpty(const MonoList *head) { return !head->next; }
+static inline bool ListIsEmpty(const MonoList *head) { return !head->next; }
 
 /**
  * Sprawdza, czy lista składa się z jednego znaczącego elementu.
  * @param[in] head : pierwszy węzeł
  * @return Czy lista ma tylko jeden znaczący element?
  */
-static inline bool listIsOneElement(const MonoList *head) {
+static inline bool ListIsOneElement(const MonoList *head) {
   return head->next && !head->next->next;
 }
 
@@ -174,7 +174,7 @@ Poly PolyClone(const Poly *p) {
   }
 }
 
-static void PolyPlusEqualConstant(Poly *p, poly_coeff_t c);
+static void PolyAddAssignConstant(Poly *p, poly_coeff_t c);
 
 static void PolyAddMerge(Poly *p, const Poly *q);
 
@@ -183,7 +183,7 @@ static void PolyAddMerge(Poly *p, const Poly *q);
  * @param[in] p : zwiększany wielomian
  * @param[in] q : dodawany wielomian
  */
-static void PolyPlusEqual(Poly *p, const Poly *q) {
+static void PolyAddAssign(Poly *p, const Poly *q) {
   bool pIsCoeff = PolyIsCoeff(p);
   bool qIsCoeff = PolyIsCoeff(q);
 
@@ -191,10 +191,10 @@ static void PolyPlusEqual(Poly *p, const Poly *q) {
     p->coeff += q->coeff;
   } else if (pIsCoeff) {
     Poly copy = PolyClone(q);
-    PolyPlusEqualConstant(&copy, p->coeff);
+    PolyAddAssignConstant(&copy, p->coeff);
     *p = copy;
   } else if (qIsCoeff) {
-    PolyPlusEqualConstant(p, q->coeff);
+    PolyAddAssignConstant(p, q->coeff);
   } else {
     PolyAddMerge(p, q);
   }
@@ -221,7 +221,7 @@ static void PolyAddMerge(Poly *p, const Poly *q) {
       pIter = pIter->next;
       qIter = qIter->next;
     } else {
-      PolyPlusEqual(&(pIter->next->m.p), &(qIter->next->m.p));
+      PolyAddAssign(&(pIter->next->m.p), &(qIter->next->m.p));
 
       pIter = pIter->next;
       qIter = qIter->next;
@@ -236,7 +236,7 @@ static void PolyAddMerge(Poly *p, const Poly *q) {
  * @param[in] p : zwiększany wielomian
  * @param[in] c : dodawana stała
  */
-static void PolyPlusEqualConstant(Poly *p, poly_coeff_t c) {
+static void PolyAddAssignConstant(Poly *p, poly_coeff_t c) {
   if (PolyIsCoeff(p)) {
     p->coeff += c;
   } else {
@@ -246,7 +246,7 @@ static void PolyPlusEqualConstant(Poly *p, poly_coeff_t c) {
     while (iter->next) { iter = iter->next; }
 
     if (MonoGetExp(&(iter->m)) == 0) {
-      PolyPlusEqualConstant(&(iter->m.p), c);
+      PolyAddAssignConstant(&(iter->m.p), c);
     } else {
       Poly coeff = PolyFromCoeff(c);
       Mono constant = MonoFromPoly(&coeff, 0);
@@ -283,7 +283,7 @@ static void PolyRemoveZeros(Poly *p) {
       }
     }
 
-    if (listIsEmpty(p->list)) {
+    if (ListIsEmpty(p->list)) {
       MonoListFree(p->list);
       *p = PolyZero();
     }
@@ -304,6 +304,7 @@ static inline void MonoRemoveZeros(Mono *m) { PolyRemoveZeros(&(m->p)); }
 static inline bool MonoIsConstant(const Mono *m) {
   return m->exp == 0 && PolyIsCoeff(&(m->p));
 }
+
 static inline void MonoNormalizeConstants(Mono *m);
 
 /**
@@ -332,7 +333,7 @@ static void PolyNormalizeConstants(Poly *p) {
       iter = iter->next;
     }
 
-    if (listIsOneElement(p->list) && MonoIsConstant(&(p->list->next->m))) {
+    if (ListIsOneElement(p->list) && MonoIsConstant(&(p->list->next->m))) {
       PolyCoeffy(p);
     }
   }
@@ -349,7 +350,7 @@ static inline void MonoNormalizeConstants(Mono *m) {
 
 Poly PolyAdd(const Poly *p, const Poly *q) {
   Poly result = PolyClone(p);
-  PolyPlusEqual(&result, q);
+  PolyAddAssign(&result, q);
 
   PolyRemoveZeros(&result);
   PolyNormalizeConstants(&result);
@@ -372,7 +373,7 @@ static void MonoListInsert(MonoList *head, Mono *m) {
   if (!head->next || MonoListNextMono(head)->exp < m->exp) {
     MonoListInsertNext(head, m);
   } else {
-    PolyPlusEqual(&(MonoListNextMono(head)->p), &(m->p));
+    PolyAddAssign(&(MonoListNextMono(head)->p), &(m->p));
     MonoDestroy(m);
   }
 }
@@ -399,7 +400,7 @@ Poly PolyAddMonos(size_t count, const Mono monos[]) {
  * @param[in] p : wielomian
  * @param[in] c : stała
  */
-static void PolyDotEqualConstant(Poly *p, poly_coeff_t c) {
+static void PolyMulAssignConstant(Poly *p, poly_coeff_t c) {
   if (PolyIsCoeff(p)) {
     p->coeff *= c;
   } else {
@@ -409,7 +410,7 @@ static void PolyDotEqualConstant(Poly *p, poly_coeff_t c) {
     Mono *mono;
     while (iter->next) {
       mono = MonoListNextMono(iter);
-      PolyDotEqualConstant(&(mono->p), c);
+      PolyMulAssignConstant(&(mono->p), c);
 
       iter = iter->next;
     }
@@ -424,24 +425,23 @@ Poly PolyMul(const Poly *p, const Poly *q) {
 
   if (pIsCoeff && qIsCoeff) {
     return (Poly){.coeff = p->coeff * q->coeff, .list = NULL};
-  } else if (pIsCoeff) {
-    Poly result = PolyClone(q);
-    PolyDotEqualConstant(&result, p->coeff);
-
-    PolyRemoveZeros(&result);
-    PolyNormalizeConstants(&result);
-
-    return result;
-  } else if (qIsCoeff) {
-    Poly result = PolyClone(p);
-    PolyDotEqualConstant(&result, q->coeff);
-
-    PolyRemoveZeros(&result);
-    PolyNormalizeConstants(&result);
-
-    return result;
-  } else {
+  } else if (!pIsCoeff && !qIsCoeff) {
     return PolyMulMonos(p, q);
+  } else {
+    Poly result;
+
+    if (pIsCoeff) {
+      result = PolyClone(q);
+      PolyMulAssignConstant(&result, p->coeff);
+    } else {
+      result = PolyClone(p);
+      PolyMulAssignConstant(&result, q->coeff);
+    }
+
+    PolyRemoveZeros(&result);
+    PolyNormalizeConstants(&result);
+
+    return result;
   }
 }
 
@@ -612,7 +612,7 @@ Poly PolyAt(const Poly *p, poly_coeff_t x) {
       constant = PolyFromCoeff(poly_coeff_tPow(x, mono->exp));
       subResult = PolyMul(&(mono->p), &constant);
 
-      PolyPlusEqual(&result, &subResult);
+      PolyAddAssign(&result, &subResult);
       PolyDestroy(&subResult);
 
       iter = iter->next;
