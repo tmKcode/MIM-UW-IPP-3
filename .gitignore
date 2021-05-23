@@ -1,3 +1,5 @@
 TODO.txt
 debug/
 release/
+.idea
+cmake-build-debug
