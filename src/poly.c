@@ -6,7 +6,9 @@
   @copyright Uniwersytet Warszawski
   @date 2021
 */
+
 #include "poly.h"
+
 #include <stdlib.h>
 
 /**
