@@ -43,5 +43,3 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
     )
 endif (DOXYGEN_FOUND)
-
-add_executable(scratch /home/tmk/.config/JetBrains/CLion2020.3/scratches/scratch.cpp)
