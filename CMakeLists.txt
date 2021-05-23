@@ -23,7 +23,9 @@ set(CMAKE_C_FLAGS "-std=c11 -Wall -Wextra")
 set(SOURCE_FILES
     src/poly.c
     src/poly.h
-    src/poly_example.c)
+    src/poly_example.c
+    src/stack.h
+    src/stack.c)
 
 # Wskazujemy plik wykonywalny.
 add_executable(poly ${SOURCE_FILES})
@@ -41,3 +43,5 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
     )
 endif (DOXYGEN_FOUND)
+
+add_executable(scratch /home/tmk/.config/JetBrains/CLion2020.3/scratches/scratch.cpp)
