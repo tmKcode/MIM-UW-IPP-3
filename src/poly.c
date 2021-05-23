@@ -292,7 +292,7 @@ static void PolyRemoveZeros(Poly *p) {
 
 /**
  * Usuwa jednomiany tożsamościowo równe zeru z jednomianu.
- * @param[in] p : jednomian
+ * @param[in] m : jednomian
  */
 static inline void MonoRemoveZeros(Mono *m) { PolyRemoveZeros(&(m->p)); }
 
@@ -308,7 +308,7 @@ static inline void MonoNormalizeConstants(Mono *m);
 
 /**
  * Zamienia wielomian tożsamościowo równy stałej na stałą.
- * @param[in] m : wielomian
+ * @param[in] p : wielomian
  */
 static inline void PolyCoeffy(Poly *p) {
   poly_coeff_t c = p->list->next->m.p.coeff;
@@ -320,7 +320,7 @@ static inline void PolyCoeffy(Poly *p) {
 /**
  * Modyfikuje wielomian,
  * zamieniając wielomiany i jednomiany tożsamościowo równe stałym na stałe.
- * @param[in] m : wielomian
+ * @param[in] p : wielomian
  */
 static void PolyNormalizeConstants(Poly *p) {
   if (!PolyIsCoeff(p)) {
