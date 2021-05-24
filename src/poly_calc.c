@@ -15,23 +15,41 @@
 #include <errno.h>
 #include <stdio.h>
 
+/**
+ * Jeśli errnum to kod ENOMEM, funkcja awaryjnie kończy działanie programu z
+ * kodem 1.
+ * @param[in] errnum : kod błędu
+ */
 static void checkMemoryError(int errnum) {
   if (errnum == ENOMEM)
     exit(1);
 }
 
+/**
+ * Wyświetla komunikat o błędzie o indeksie idx, nazwie errorName na stderr.
+ * @param[in] idx : indeks
+ * @param[in] errorName : nazwa błędu
+ */
 static void PrintError(size_t idx, char *errorName) {
   fprintf(stderr, "ERROR %zu %s\n", idx, errorName);
 }
 
 static void PrintPoly(Poly *p);
 
+/**
+ * Wyświetla jednomian m na stdout.
+ * @param[in] m : jednomian
+ */
 static void PrintMono(Mono *m) {
   printf("(");
   PrintPoly(&m->p);
   printf(",%d)", m->exp);
 }
 
+/**
+ * Wyświetla wielomian p na stdout.
+ * @param[in] p : wielomian
+ */
 static void PrintPoly(Poly *p) {
   if (PolyIsCoeff(p)) {
     printf("%ld", p->coeff);
@@ -48,47 +66,56 @@ static void PrintPoly(Poly *p) {
   }
 }
 
-static void ProcessOneArgCommand(char *line, ssize_t lineLength,
-                                 PolyStack *stack, size_t i) {
-  if (CommandIsPop(line)) {
+/**
+ * Przetwarza jednoargumentową komendę command korzystając ze stosu stack.
+ * @param[in] command : komenda
+ * @param[in] stack : stos
+ */
+static void ProcessOneArgCommand(char *command, PolyStack *stack) {
+  if (CommandIsPop(command)) {
     PolyStackPop(stack);
   } else {
     Poly top = PolyStackPeek(stack);
 
-    if (CommandIsIsCoeff(line)) {
+    if (CommandIsIsCoeff(command)) {
       printf("%d\n", PolyIsCoeff(&top));
-    } else if (CommandIsIsZero(line)) {
+    } else if (CommandIsIsZero(command)) {
       printf("%d\n", PolyIsZero(&top));
-    } else if (CommandIsClone(line)) {
+    } else if (CommandIsClone(command)) {
       PolyStackPush(stack, PolyClone(&top));
-    } else if (CommandIsNeg(line)) {
+    } else if (CommandIsNeg(command)) {
       Poly negTop = PolyNeg(&top);
 
       PolyStackPop(stack);
       PolyStackPush(stack, negTop);
-    } else if (CommandIsDeg(line)) {
+    } else if (CommandIsDeg(command)) {
       printf("%d\n", PolyDeg(&top));
-    } else if (CommandIsPrint(line)) {
+    } else if (CommandIsPrint(command)) {
       PrintPoly(&top);
       printf("\n");
     }
   }
 }
 
-static void ProcessTwoArgCommand(char *line, PolyStack *stack) {
+/**
+ * Przetwarza dwuargumentową komendę command korzystając ze stosu stack.
+ * @param[in] command : komenda
+ * @param[in] stack : stos
+ */
+static void ProcessTwoArgCommand(char *command, PolyStack *stack) {
   Poly top = PolyStackPeek(stack);
   Poly subTop = PolyStackPeekSecond(stack);
 
-  if (CommandIsIsEq(line)) {
+  if (CommandIsIsEq(command)) {
     printf("%d\n", PolyIsEq(&top, &subTop));
   } else {
     Poly res;
 
-    if (CommandIsAdd(line)) {
+    if (CommandIsAdd(command)) {
       res = PolyAdd(&top, &subTop);
-    } else if (CommandIsMul(line)) {
+    } else if (CommandIsMul(command)) {
       res = PolyMul(&top, &subTop);
-    } else if (CommandIsSub(line)) {
+    } else if (CommandIsSub(command)) {
       res = PolySub(&top, &subTop);
     }
 
@@ -115,7 +142,7 @@ void CalcStart() {
     if (!LineIsIgnorable(newLine, lineLength)) {
       LineNormalize(newLine);
 
-      if (LineIsCommand(newLine, lineLength)) {
+      if (LineIsCommand(newLine)) {
         if (CommandIsZero(newLine)) {
           PolyStackPush(&stack, PolyZero());
         } else if (CommandIsDegBy(newLine)) {
@@ -150,7 +177,7 @@ void CalcStart() {
           if (PolyStackIsEmpty(&stack)) {
             PrintError(i, "STACK UNDERFLOW");
           } else {
-            ProcessOneArgCommand(newLine, lineLength, &stack, i);
+            ProcessOneArgCommand(newLine, &stack);
           }
         } else if (CommandIsTwoArg(newLine)) {
           if (PolyStackSize(&stack) < 2) {
@@ -173,8 +200,7 @@ void CalcStart() {
           PolyDestroy(&p);
 
           PrintError(i, "WRONG POLY");
-        }
-        else {
+        } else {
           PolyNormalizeConstants(&p);
           PolyRemoveZeros(&p);
 
@@ -182,7 +208,6 @@ void CalcStart() {
         }
       }
     }
-
 
     errno = 0;
     lineLength = getline(&newLine, &bufferLength, stdin);

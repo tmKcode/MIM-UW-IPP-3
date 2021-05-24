@@ -10,6 +10,9 @@
 #ifndef POLY_CALC_H
 #define POLY_CALC_H
 
+/**
+ * Rozpoczyna działanie kalkulatora wielomianów.
+ */
 void CalcStart();
 
 #endif // POLY_CALC_H

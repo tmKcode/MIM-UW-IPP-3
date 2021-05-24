@@ -14,9 +14,21 @@
 #include <limits.h>
 #include <stdlib.h>
 
+/**
+ * Dolna granica kodu ASCII dla cyfry.
+ */
 #define ASCII_D_LB 48
+
+/**
+ * Górna granica kodu ASCII dla cyfry.
+ */
 #define ASCII_D_UB 57
 
+/**
+ * Sprawdza, czy znak jest cyfrą.
+ * @param[in] c : znak
+ * @return Czy znak jest cyfrą?
+ */
 bool CharIsDigit(char c) {
   return (int)c >= ASCII_D_LB && (int)c <= ASCII_D_UB;
 }

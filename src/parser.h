@@ -17,11 +17,34 @@
 #include <stdbool.h>
 #include <string.h>
 
+/**
+ * Dolna granica kodu ASCII dla małej litery angielskiej.
+ */
 #define ASCII_L_LB 97
+
+/**
+ * Górna granica kodu ASCII dla małej litery angielskiej.
+ */
 #define ASCII_L_UB 122
+
+/**
+ * Dolna granica kodu ASCII dla wielkiej litery angielskiej.
+ */
 #define ASCII_U_LB 65
+
+/**
+ * Górna granica kodu ASCII dla wielkiej litery angielskiej.
+ */
 #define ASCII_U_UB 90
+
+/**
+ * Długość napisu "DEG_BY"
+ */
 #define DEG_BY_STRLEN 6
+
+/**
+ * Długość napisu "AT"
+ */
 #define AT_STRLEN 2
 
 /**
@@ -53,13 +76,13 @@ void LineNormalize(char *line);
 /**
  * Sprawdza, czy linia tekstu jest komendą (wg składni kalkulatora).
  * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą?
+ * @return Czy linia tekstu jest komendą?
  */
 static inline bool LineIsCommand(char *line) { return CharIsLetter(line[0]); }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "ZERO" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
+ * Sprawdza, czy komenda jest komendą "ZERO" (wg składni kalkulatora).
+ * @param[in] command : komenda
  * @return Czy linię tekstu jest komendą "ZERO"?
  */
 static inline bool CommandIsZero(char *command) {
@@ -67,90 +90,90 @@ static inline bool CommandIsZero(char *command) {
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "IS_COEFF" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "IS_COEFF"?
+ * Sprawdza, czy komenda jest komendą "IS_COEFF" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "IS_COEFF"?
  */
 static inline bool CommandIsIsCoeff(char *command) {
   return strcmp(command, "IS_COEFF") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "IS_ZERO" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "IS_ZERO"?
+ * Sprawdza, czy komenda jest komendą "IS_ZERO" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "IS_ZERO"?
  */
 static inline bool CommandIsIsZero(char *command) {
   return strcmp(command, "IS_ZERO") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "CLONE" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "CLONE"?
+ * Sprawdza, czy komenda jest komendą "CLONE" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "CLONE"?
  */
 static inline bool CommandIsClone(char *command) {
   return strcmp(command, "CLONE") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "ADD" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "ADD"?
+ * Sprawdza, czy komenda jest komendą "ADD" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "ADD"?
  */
 static inline bool CommandIsAdd(char *command) {
   return strcmp(command, "ADD") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "MUL" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "MUL"?
+ * Sprawdza, czy komenda jest komendą "MUL" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "MUL"?
  */
 static inline bool CommandIsMul(char *command) {
   return strcmp(command, "MUL") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "NEG" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "NEG"?
+ * Sprawdza, czy komenda jest komendą "NEG" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "NEG"?
  */
 static inline bool CommandIsNeg(char *command) {
   return strcmp(command, "NEG") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "SUB" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "SUB"?
+ * Sprawdza, czy komenda jest komendą "SUB" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "SUB"?
  */
 static inline bool CommandIsSub(char *command) {
   return strcmp(command, "SUB") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "IS_EQ" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "IS_EQ"?
+ * Sprawdza, czy komenda jest komendą "IS_EQ" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "IS_EQ"?
  */
 static inline bool CommandIsIsEq(char *command) {
   return strcmp(command, "IS_EQ") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "DEG" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "DEG"?
+ * Sprawdza, czy komenda jest komendą "DEG" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "DEG"?
  */
 static inline bool CommandIsDeg(char *command) {
   return strcmp(command, "DEG") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "DEG_BY" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "DEG_BY"?
+ * Sprawdza, czy komenda jest komendą "DEG_BY" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "DEG_BY"?
  */
 static inline bool CommandIsDegBy(char *command) {
   return (strncmp(command, "DEG_BY", DEG_BY_STRLEN) == 0 &&
@@ -158,9 +181,9 @@ static inline bool CommandIsDegBy(char *command) {
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "AT" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "AT"?
+ * Sprawdza, czy komenda jest komendą "AT" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "AT"?
  */
 static inline bool CommandIsAt(char *command) {
   return (strncmp(command, "AT", AT_STRLEN) == 0 &&
@@ -168,28 +191,28 @@ static inline bool CommandIsAt(char *command) {
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "PRINT" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "PRINT"?
+ * Sprawdza, czy komenda jest komendą "PRINT" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "PRINT"?
  */
 static inline bool CommandIsPrint(char *command) {
   return strcmp(command, "PRINT") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą "POP" (wg składni kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą "POP"?
+ * Sprawdza, czy komenda jest komendą "POP" (wg składni kalkulatora).
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą "POP"?
  */
 static inline bool CommandIsPop(char *command) {
   return strcmp(command, "POP") == 0;
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą jednoargumentową (wg składni
+ * Sprawdza, czy komenda jest komendą jednoargumentową (wg składni
  * kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą jednoargumentową?
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą jednoargumentową?
  */
 static inline bool CommandIsOneArg(char *command) {
   return CommandIsIsCoeff(command) || CommandIsIsZero(command) ||
@@ -200,10 +223,10 @@ static inline bool CommandIsOneArg(char *command) {
 }
 
 /**
- * Sprawdza, czy linia tekstu jest komendą dwuargumentową (wg składni
+ * Sprawdza, czy komenda jest komendą dwuargumentową (wg składni
  * kalkulatora).
- * @param[in] line : linia tekstu
- * @return Czy linię tekstu jest komendą dwuargumentową?
+ * @param[in] command : komenda
+ * @return Czy komenda jest komendą dwuargumentową?
  */
 static inline bool CommandIsTwoArg(char *command) {
   return CommandIsAdd(command) || CommandIsMul(command) ||

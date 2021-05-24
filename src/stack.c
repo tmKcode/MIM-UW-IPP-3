@@ -49,6 +49,11 @@ Poly PolyStackPeekSecond(PolyStack *s) {
   return s->array[s->top - 1];
 }
 
+/**
+ * Sprawdza, czy stos s powinien się zmiejszyć.
+ * @param[in] s : stos
+ * @return Czy stos s powinien się zmiejszyć?
+ */
 static bool PolyStackShouldShrink(PolyStack *s) {
   size_t size = PolyStackSize(s);
 
@@ -56,6 +61,10 @@ static bool PolyStackShouldShrink(PolyStack *s) {
          size > STACK_MINIMUM_CAPACITY;
 }
 
+/**
+ * Zmniejsza stos s.
+ * @param[in] s : stos
+ */
 static void PolyStackShrink(PolyStack *s) {
   assert(s);
 
@@ -76,10 +85,19 @@ void PolyStackPop(PolyStack *s) {
   }
 }
 
+/**
+ * Sprawdza, czy stos s powinien się zwiększyć.
+ * @param[in] s : stos
+ * @return Czy stos s powinien się zwiększyć?
+ */
 static bool PolyStackShouldGrow(PolyStack *s) {
   return PolyStackSize(s) == s->capacity;
 }
 
+/**
+ * Zwiększa stos s.
+ * @param[in] s : stos
+ */
 static void PolyStackGrow(PolyStack *s) {
   assert(s);
 

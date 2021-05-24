@@ -296,6 +296,10 @@ static inline bool MonoIsConstant(const Mono *m) {
 
 static inline void MonoNormalizeConstants(Mono *m);
 
+/**
+ * Zamienia wielomian stały na wielomian będący współczynnikiem.
+ * @param[in] p : wielomian
+ */
 static inline void PolyCoeffy(Poly *p) {
   poly_coeff_t c = p->list->next->m.p.coeff;
   MonoListFree(p->list);
