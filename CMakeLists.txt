@@ -23,7 +23,6 @@ set(CMAKE_C_FLAGS "-std=c11 -Wall -Wextra -D_GNU_SOURCE")
 set(SOURCE_FILES
         src/poly.c
         src/poly.h
-#        src/poly_example.c
         src/stack.h
         src/stack.c
         src/parser.c
