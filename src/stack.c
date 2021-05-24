@@ -37,12 +37,16 @@ size_t PolyStackSize(PolyStack *s) {
   return s->top + 1;
 }
 
-static bool PolyStackIsEmpty(PolyStack *s) { return PolyStackSize(s) > 0; }
-
 Poly PolyStackPeek(PolyStack *s) {
   assert(!PolyStackIsEmpty(s));
 
   return s->array[s->top];
+}
+
+Poly PolyStackPeekSecond(PolyStack *s) {
+  assert(PolyStackSize(s) >= 2);
+
+  return s->array[s->top - 1];
 }
 
 static bool PolyStackShouldShrink(PolyStack *s) {

@@ -66,12 +66,7 @@ static inline bool ListIsOneElement(const MonoList *head) {
   return head->next && !head->next->next;
 }
 
-/**
- * Zwraca następny jednomian z listy.
- * @param[in] precedingElement : poprzedzający węzeł
- * @return następny jednomian
- */
-static Mono *MonoListNextMono(const MonoList *precedingElement) {
+Mono *MonoListNextMono(const MonoList *precedingElement) {
   assert(precedingElement);
   assert(precedingElement->next);
 

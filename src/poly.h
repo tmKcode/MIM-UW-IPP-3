@@ -65,6 +65,13 @@ typedef struct MonoList {
 } MonoList;
 
 /**
+ * Zwraca następny jednomian z listy.
+ * @param[in] precedingElement : poprzedzający węzeł
+ * @return następny jednomian
+ */
+Mono *MonoListNextMono(const MonoList *precedingElement);
+
+/**
  * Daje wartość wykładnika jendomianu.
  * @param[in] m : jednomian
  * @return wartość wykładnika jednomianu
