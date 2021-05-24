@@ -18,7 +18,9 @@
  */
 #define CHECK_PTR(p)                                                           \
   do {                                                                         \
-    if (!p) { exit(1); }                                                       \
+    if (!p) {                                                                  \
+      exit(1);                                                                 \
+    }                                                                          \
   } while (0)
 
 /**
@@ -30,7 +32,8 @@
 static poly_coeff_t poly_coeff_tPow(poly_coeff_t base, poly_exp_t exp) {
   poly_coeff_t result = 1;
   while (exp != 0) {
-    if (exp % 2 != 0) result *= base;
+    if (exp % 2 != 0)
+      result *= base;
     exp /= 2;
     base *= base;
   }
@@ -38,11 +41,7 @@ static poly_coeff_t poly_coeff_tPow(poly_coeff_t base, poly_exp_t exp) {
   return result;
 }
 
-/**
- * Zwraca pierwszy węzeł jednoelementowej listy zawierającej wartownika.
- * @return pierwszy węzeł nowej listy
- */
-static MonoList *NewMonoList() {
+MonoList *NewMonoList() {
   MonoList *newList = malloc(sizeof(MonoList));
   CHECK_PTR(newList);
   newList->next = NULL;
@@ -111,7 +110,9 @@ static void MonoListFreeNext(MonoList *precedingElement) {
 static void MonoListFree(MonoList *head) {
   assert(head);
 
-  while (head->next) { MonoListFreeNext(head); }
+  while (head->next) {
+    MonoListFreeNext(head);
+  }
 
   free(head);
 }
@@ -209,9 +210,9 @@ static void PolyAddMerge(Poly *p, const Poly *q) {
   MonoList *pIter = p->list;
   MonoList *qIter = q->list;
   while (pIter->next && qIter->next) {
-    if (MonoListNextMono(pIter)->exp > MonoListNextMono(qIter)->exp) {
+    if (MonoListNextMono(pIter)->exp < MonoListNextMono(qIter)->exp) {
       pIter = pIter->next;
-    } else if (MonoListNextMono(pIter)->exp < MonoListNextMono(qIter)->exp) {
+    } else if (MonoListNextMono(pIter)->exp > MonoListNextMono(qIter)->exp) {
       Mono copy = MonoClone(&(qIter->next->m));
       MonoListInsertNext(pIter, &copy);
 
@@ -225,7 +226,9 @@ static void PolyAddMerge(Poly *p, const Poly *q) {
     }
   }
 
-  if (qIter->next) { pIter->next = MonoListRemoveDummy(MonoListClone(qIter)); }
+  if (qIter->next) {
+    pIter->next = MonoListRemoveDummy(MonoListClone(qIter));
+  }
 }
 
 /**
@@ -239,15 +242,14 @@ static void PolyAddAssignConstant(Poly *p, poly_coeff_t c) {
   } else {
     assert(p->list);
 
-    MonoList *iter = p->list;
-    while (iter->next) { iter = iter->next; }
+    Mono *firstMono = MonoListNextMono(p->list);
 
-    if (MonoGetExp(&(iter->m)) == 0) {
-      PolyAddAssignConstant(&(iter->m.p), c);
+    if (MonoGetExp(firstMono) == 0) {
+      PolyAddAssignConstant(&(firstMono->p), c);
     } else {
       Poly coeff = PolyFromCoeff(c);
       Mono constant = MonoFromPoly(&coeff, 0);
-      MonoListInsertNext(iter, &constant);
+      MonoListInsertNext(p->list, &constant);
     }
   }
 }
@@ -261,12 +263,7 @@ static void MonoRemoveZeros(Mono *m);
  */
 static inline bool MonoIsZero(const Mono *m) { return PolyIsZero(&(m->p)); }
 
-/**
- * Usuwa jednomiany tożsamościowo równe zeru z wielomianu.
- * Przekształca wielomian do poprawnej formy.
- * @param[in] p : wielomian
- */
-static void PolyRemoveZeros(Poly *p) {
+void PolyRemoveZeros(Poly *p) {
   if (!PolyIsCoeff(p)) {
     assert(p->list);
 
@@ -304,10 +301,6 @@ static inline bool MonoIsConstant(const Mono *m) {
 
 static inline void MonoNormalizeConstants(Mono *m);
 
-/**
- * Zamienia wielomian tożsamościowo równy stałej na stałą.
- * @param[in] p : wielomian
- */
 static inline void PolyCoeffy(Poly *p) {
   poly_coeff_t c = p->list->next->m.p.coeff;
   MonoListFree(p->list);
@@ -320,7 +313,7 @@ static inline void PolyCoeffy(Poly *p) {
  * zamieniając wielomiany i jednomiany tożsamościowo równe stałym na stałe.
  * @param[in] p : wielomian
  */
-static void PolyNormalizeConstants(Poly *p) {
+void PolyNormalizeConstants(Poly *p) {
   if (!PolyIsCoeff(p)) {
     assert(p->list);
 
@@ -355,19 +348,12 @@ Poly PolyAdd(const Poly *p, const Poly *q) {
   return result;
 }
 
-/**
- * Wstawia jednomian do listy jednomianów.
- * Jeśli w liście znajduje się jednomian o tym samym wykładniku,
- * jest on zwiększany przez wstawiany wielomian.
- * @param[in] head : pierwszy węzeł
- * @param[in] m : jednomian
- */
-static void MonoListInsert(MonoList *head, Mono *m) {
-  while (head->next && MonoListNextMono(head)->exp > m->exp) {
+void MonoListInsert(MonoList *head, Mono *m) {
+  while (head->next && MonoListNextMono(head)->exp < m->exp) {
     head = head->next;
   }
 
-  if (!head->next || MonoListNextMono(head)->exp < m->exp) {
+  if (!head->next || MonoListNextMono(head)->exp > m->exp) {
     MonoListInsertNext(head, m);
   } else {
     PolyAddAssign(&(MonoListNextMono(head)->p), &(m->p));
@@ -376,7 +362,9 @@ static void MonoListInsert(MonoList *head, Mono *m) {
 }
 
 Poly PolyAddMonos(size_t count, const Mono monos[]) {
-  if (count == 0) { return PolyZero(); }
+  if (count == 0) {
+    return PolyZero();
+  }
   MonoList *head = NewMonoList();
 
   Mono mono;
@@ -499,7 +487,12 @@ poly_exp_t PolyDegBy(const Poly *p, size_t varIdx) {
   if (PolyIsCoeff(p)) {
     return PolyIsZero(p) ? -1 : 0;
   } else if (varIdx == 0) {
-    return MonoListNextMono(p->list)->exp;
+    MonoList *iter = p->list;
+    while (iter->next) {
+      iter = iter->next;
+    }
+
+    return iter->m.exp;
   } else {
     assert(p->list);
 
@@ -508,7 +501,9 @@ poly_exp_t PolyDegBy(const Poly *p, size_t varIdx) {
     MonoList *iter = p->list;
     while (iter->next) {
       newDeg = PolyDegBy(&(MonoListNextMono(iter)->p), varIdx - 1);
-      if (newDeg > maxDeg) { maxDeg = newDeg; }
+      if (newDeg > maxDeg) {
+        maxDeg = newDeg;
+      }
 
       iter = iter->next;
     }
@@ -534,7 +529,9 @@ poly_exp_t PolyDeg(const Poly *p) {
       newDeg = mono->exp;
       newDeg += PolyDeg(&(mono->p));
 
-      if (newDeg > maxDeg) { maxDeg = newDeg; }
+      if (newDeg > maxDeg) {
+        maxDeg = newDeg;
+      }
 
       iter = iter->next;
     }
@@ -574,7 +571,9 @@ bool PolyIsEq(const Poly *p, const Poly *q) {
       pIter = pIter->next;
       qIter = qIter->next;
     }
-    if (pIter->next || qIter->next) { return false; }
+    if (pIter->next || qIter->next) {
+      return false;
+    }
 
     return true;
   }
@@ -584,14 +583,10 @@ Poly PolyAt(const Poly *p, poly_coeff_t x) {
   if (PolyIsCoeff(p)) {
     return PolyClone(p);
   } else if (x == 0) {
-    MonoList *iter = p->list;
-    Mono mono;
+    Mono *mono = MonoListNextMono(p->list);
 
-    while (iter->next) { iter = iter->next; }
-
-    mono = iter->m;
-    if (mono.exp == 0) {
-      return PolyClone(&(mono.p));
+    if (mono->exp == 0) {
+      return PolyClone(&(mono->p));
     } else {
       return PolyZero();
     }

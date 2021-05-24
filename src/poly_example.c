@@ -183,7 +183,7 @@ static bool SimpleMulTest(void) {
   res &= TestMul(P(C(-1), 0, C(1), 1), P(C(1), 0, C(1), 1),
                  P(C(-1), 0, C(1), 2));
   res &= TestMul(P(P(C(1), 2), 0, P(C(1), 1), 1, C(1), 2),
-                 P(P(C(1), 2), 0, P(C(-1), 1), 1, C(1), 2),
+                 P(P(C(1), 2), 0, P(C(-1), 1), 1, C(1), 2),reforma
                  P(P(C(1), 4), 0, P(C(1), 2), 2, C(1), 4));
   return res;
 }

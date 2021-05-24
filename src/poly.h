@@ -65,11 +65,26 @@ typedef struct MonoList {
 } MonoList;
 
 /**
+ * Zwraca pierwszy węzeł jednoelementowej listy zawierającej wartownika.
+ * @return pierwszy węzeł nowej listy
+ */
+MonoList *NewMonoList();
+
+/**
  * Zwraca następny jednomian z listy.
  * @param[in] precedingElement : poprzedzający węzeł
  * @return następny jednomian
  */
 Mono *MonoListNextMono(const MonoList *precedingElement);
+
+/**
+ * Wstawia jednomian do listy jednomianów.
+ * Jeśli w liście znajduje się jednomian o tym samym wykładniku,
+ * jest on zwiększany przez wstawiany wielomian.
+ * @param[in] head : pierwszy węzeł
+ * @param[in] m : jednomian
+ */
+void MonoListInsert(MonoList *head, Mono *m);
 
 /**
  * Daje wartość wykładnika jendomianu.
@@ -103,7 +118,6 @@ static inline bool PolyIsZero(const Poly *p);
  * @return jednomian @f$px_i^n@f$
  */
 static inline Mono MonoFromPoly(const Poly *p, poly_exp_t n) {
-  assert(n == 0 || !PolyIsZero(p));
   return (Mono){.p = *p, .exp = n};
 }
 
@@ -150,6 +164,20 @@ Poly PolyClone(const Poly *p);
 static inline Mono MonoClone(const Mono *m) {
   return (Mono){.p = PolyClone(&m->p), .exp = m->exp};
 }
+
+/**
+ * Usuwa jednomiany tożsamościowo równe zeru z wielomianu.
+ * Przekształca wielomian do poprawnej formy.
+ * @param[in] p : wielomian
+ */
+void PolyRemoveZeros(Poly *p);
+
+/**
+ * Modyfikuje wielomian,
+ * zamieniając wielomiany i jednomiany tożsamościowo równe stałym na stałe.
+ * @param[in] p : wielomian
+ */
+void PolyNormalizeConstants(Poly *p);
 
 /**
  * Dodaje dwa wielomiany.

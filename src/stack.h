@@ -29,7 +29,7 @@ PolyStack NewPolyStack();
 size_t PolyStackSize(PolyStack *s);
 
 static inline bool PolyStackIsEmpty(PolyStack *s) {
-  return PolyStackSize(s) > 0;
+  return PolyStackSize(s) == 0;
 }
 
 Poly PolyStackPeek(PolyStack *s);

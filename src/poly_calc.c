@@ -9,6 +9,7 @@
 
 #include "poly_calc.h"
 #include "parser.h"
+#include "poly.h"
 #include "stack.h"
 
 #include <errno.h>
@@ -20,7 +21,7 @@ static void checkMemoryError(int errnum) {
 }
 
 static void PrintError(size_t idx, char *errorName) {
-  printf("ERROR %zu %s\n", idx, errorName);
+  fprintf(stderr, "ERROR %zu %s\n", idx, errorName);
 }
 
 static void PrintPoly(Poly *p);
@@ -49,24 +50,22 @@ static void PrintPoly(Poly *p) {
 
 static void ProcessOneArgCommand(char *line, ssize_t lineLength,
                                  PolyStack *stack, size_t i) {
-  if (CommandIsZero(line)) {
-    PolyStackPush(&stack, PolyZero());
-  } else if (CommandIsPop(line)) {
-    PolyStackPop(&stack);
+  if (CommandIsPop(line)) {
+    PolyStackPop(stack);
   } else {
-    Poly top = PolyStackPeek(&stack);
+    Poly top = PolyStackPeek(stack);
 
     if (CommandIsIsCoeff(line)) {
       printf("%d\n", PolyIsCoeff(&top));
     } else if (CommandIsIsZero(line)) {
       printf("%d\n", PolyIsZero(&top));
     } else if (CommandIsClone(line)) {
-      PolyStackPush(&stack, PolyClone(&top));
+      PolyStackPush(stack, PolyClone(&top));
     } else if (CommandIsNeg(line)) {
       Poly negTop = PolyNeg(&top);
 
-      PolyStackPop(&stack);
-      PolyStackPush(&stack, negTop);
+      PolyStackPop(stack);
+      PolyStackPush(stack, negTop);
     } else if (CommandIsDeg(line)) {
       printf("%d\n", PolyDeg(&top));
     } else if (CommandIsDegBy(line)) {
@@ -87,11 +86,12 @@ static void ProcessOneArgCommand(char *line, ssize_t lineLength,
       } else {
         Poly res = PolyAt(&top, x);
 
-        PolyStackPop(&stack);
-        PolyStackPush(&stack, res);
+        PolyStackPop(stack);
+        PolyStackPush(stack, res);
       }
     } else if (CommandIsPrint(line)) {
       PrintPoly(&top);
+      printf("\n");
     }
   }
 }
@@ -133,23 +133,44 @@ void CalcStart() {
   checkMemoryError(errnum);
 
   for (size_t i = 1; lineLength != EOF; i++) {
-    if (LineIsCommand(newLine, lineLength)) {
-      if (CommandIsOneArg(newLine)) {
-        if (PolyStackIsEmpty(&stack)) {
-          PrintError(i, "STACK UNDERFLOW");
+    if (!LineIsIgnorable(newLine, lineLength)) {
+      LineNormalize(newLine);
+
+      if (LineIsCommand(newLine, lineLength)) {
+        if (CommandIsZero(newLine)) {
+          PolyStackPush(&stack, PolyZero());
+
+          printf("Push %zu\n", stack.top);
+        } else if (CommandIsOneArg(newLine)) {
+          if (PolyStackIsEmpty(&stack)) {
+            PrintError(i, "STACK UNDERFLOW");
+          } else {
+            ProcessOneArgCommand(newLine, lineLength, &stack, i);
+          }
+        } else if (CommandIsTwoArg(newLine)) {
+          if (PolyStackSize(&stack) < 2) {
+            PrintError(i, "STACK UNDERFLOW");
+          } else {
+            ProcessTwoArgCommand(newLine, &stack);
+          }
         } else {
-          ProcessOneArgCommand(newLine, lineLength, &stack, i);
-        }
-      } else if (CommandIsTwoArg(newLine)) {
-        if (PolyStackSize(&stack) < 2) {
-          PrintError(i, "STACK UNDERFLOW");
-        } else {
-          ProcessTwoArgCommand(newLine, &stack);
+          PrintError(i, "WRONG COMMAND");
         }
       } else {
-        PrintError(i, "WRONG COMMAND");
+        Poly p;
+        char *endptr;
+
+        if (!PolyParse(newLine, &endptr, &p)) {
+          PrintError(i, "WRONG POLY");
+
+          PolyDestroy(&p);
+        } else {
+          PolyNormalizeConstants(&p);
+          PolyRemoveZeros(&p);
+
+          PolyStackPush(&stack, p);
+        }
       }
-    } else if (LineIsPoly(newLine, lineLength)) {
     }
 
     free(newLine);
@@ -161,4 +182,7 @@ void CalcStart() {
     errnum = errno;
     checkMemoryError(errnum);
   }
+
+  free(newLine);
+  PolyStackDestroy(&stack);
 }
