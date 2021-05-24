@@ -85,6 +85,16 @@ poly_coeff_t CommandAtX(char *command, ssize_t length, bool *error) {
   return x;
 }
 
+/**
+ * Parsuje wielomian będący współczynnikiem (wg składni kalkulatora).
+ * Jeśli parsowanie komendy się nie powiedzie, funkcja zwraca false.
+ * W p.p. zapisuje sparsowany wielomian pod wskaźnik p, wskazuje wartość
+ * wskaźnika endptr na miejsce zakończenia parsowania i zwraca true.
+ * @param[in] src : wskaźnik na początek wielomianu
+ * @param[in] endptr : wskaźnik na ciąg znaków
+ * @param[in] p : wskaźnik na wielomian
+ * @return Czy parsowanie się powiodło?
+ */
 static bool CoeffParse(const char *src, char **endptr, Poly *p) {
   if (!CharIsDigit(src[0]) && src[0] != '-') {
     return false;
@@ -103,6 +113,16 @@ static bool CoeffParse(const char *src, char **endptr, Poly *p) {
   return true;
 }
 
+/**
+ * Parsuje wykładnik jednomianu (wg składni kalkulatora).
+ * Jeśli parsowanie komendy się nie powiedzie, funkcja zwraca false.
+ * W p.p. zapisuje sparsowany wykładnik pod wskaźnik exp, wskazuje wartość
+ * wskaźnika endptr na miejsce zakończenia parsowania i zwraca true.
+ * @param[in] src : wskaźnik na początek wykładnika
+ * @param[in] endptr : wskaźnik na ciąg znaków
+ * @param[in] exp : wskaźnik na wykładnik
+ * @return Czy parsowanie się powiodło?
+ */
 static bool ExpParse(const char *src, char **endptr, poly_exp_t *exp) {
   if (!CharIsDigit(src[0])) {
     return false;
@@ -124,6 +144,16 @@ static bool ExpParse(const char *src, char **endptr, poly_exp_t *exp) {
 
 bool PolyParse(char *src, char **endptr, Poly *p);
 
+/**
+ * Parsuje jednomian (wg składni kalkulatora).
+ * Jeśli parsowanie komendy się nie powiedzie, funkcja zwraca false.
+ * W p.p. zapisuje sparsowany jednomian pod wskaźnik m, wskazuje wartość
+ * wskaźnika endptr na miejsce zakończenia parsowania i zwraca true.
+ * @param[in] src : wskaźnik na początek jednomianu
+ * @param[in] endptr : wskaźnik na ciąg znaków
+ * @param[in] m : wskaźnik na jednomian
+ * @return Czy parsowanie się powiodło?
+ */
 static bool MonoParse(char *src, char **endptr, Mono *m) {
   if (src[0] != '(') {
     return false;
@@ -159,6 +189,11 @@ static bool MonoParse(char *src, char **endptr, Mono *m) {
   return true;
 }
 
+/**
+ * Zwalnia pamięć zajętą w wyniku stworzenia listy lednomianów podczas
+ * parsowania wielomianu.
+ * @param[in] head : pierwszy węzeł listy
+ */
 static void PolyParseListDestroy(MonoList *head) {
   if (!head) {
     return;
@@ -174,6 +209,16 @@ static void PolyParseListDestroy(MonoList *head) {
   MonoListFree(head);
 }
 
+/**
+ * Parsuje wielomian będący sumą jednomianów (wg składni kalkulatora).
+ * Jeśli parsowanie komendy się nie powiedzie, funkcja zwraca false.
+ * W p.p. zapisuje sparsowany wielomian pod wskaźnik p, wskazuje wartość
+ * wskaźnika endptr na miejsce zakończenia parsowania i zwraca true.
+ * @param[in] src : wskaźnik na początek wielomianu
+ * @param[in] endptr : wskaźnik na ciąg znaków
+ * @param[in] p : wskaźnik na wielomian
+ * @return Czy parsowanie się powiodło?
+ */
 static bool PolyParseMonos(char *src, char **endptr, Poly *p) {
   MonoList *head = NewMonoList();
   Mono m;
@@ -220,4 +265,3 @@ bool PolyParse(char *src, char **endptr, Poly *p) {
 
   return false;
 }
-

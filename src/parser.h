@@ -238,7 +238,7 @@ poly_coeff_t CommandAtX(char *command, ssize_t length, bool *error);
  * Parsuje wielomian - komendę "POLY" (wg składni kalkulatora).
  * Jeśli parsowanie komendy się nie powiedzie, funkcja zwraca false.
  * W p.p. zapisuje sparsowany wielomian pod wskaźnik p, wskazuje wartość
- * wskaźnika endptr na miejsce zakończenia parsowania i zwraca true;
+ * wskaźnika endptr na miejsce zakończenia parsowania i zwraca true.
  * @param[in] src : komenda "POLY"
  * @param[in] endptr : wskaźnik na ciąg znaków
  * @param[in] p : wskaźnik na wielomian
