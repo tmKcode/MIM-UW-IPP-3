@@ -68,7 +68,8 @@ static void PolyStackShrink(PolyStack *s) {
 void PolyStackPop(PolyStack *s) {
   assert(!PolyStackIsEmpty(s));
 
-  PolyDestroy(&(s->array[s->top--]));
+  PolyDestroy(&(s->array[s->top]));
+  s->top--;
 
   if (PolyStackShouldShrink(s)) {
     PolyStackShrink(s);
@@ -97,8 +98,8 @@ void PolyStackPush(PolyStack *s, Poly p) {
 }
 
 void PolyStackDestroy(PolyStack *s) {
-  while (PolyStackSize(s) > 0) {
-    PolyStackPop(s);
+  for (int i = s->top; i >= 0; i--) {
+    PolyDestroy(&(s->array[i]));
   }
 
   free(s->array);

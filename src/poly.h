@@ -87,6 +87,13 @@ Mono *MonoListNextMono(const MonoList *precedingElement);
 void MonoListInsert(MonoList *head, Mono *m);
 
 /**
+ * Usuwa listę z pamięci.
+ * Funkcja nie usuwa jednomianów zawartych w liście z pamięci.
+ * @param[in] head : pierwszy węzeł
+ */
+void MonoListFree(MonoList *head);
+
+/**
  * Daje wartość wykładnika jendomianu.
  * @param[in] m : jednomian
  * @return wartość wykładnika jednomianu

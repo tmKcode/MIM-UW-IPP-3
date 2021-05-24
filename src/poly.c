@@ -102,12 +102,7 @@ static void MonoListFreeNext(MonoList *precedingElement) {
   precedingElement->next = tmp;
 }
 
-/**
- * Usuwa listę z pamięci.
- * Funkcja nie usuwa jednomianów zawartych w liście z pamięci.
- * @param[in] head : pierwszy węzeł
- */
-static void MonoListFree(MonoList *head) {
+void MonoListFree(MonoList *head) {
   assert(head);
 
   while (head->next) {
@@ -583,10 +578,10 @@ Poly PolyAt(const Poly *p, poly_coeff_t x) {
   if (PolyIsCoeff(p)) {
     return PolyClone(p);
   } else if (x == 0) {
-    Mono *mono = MonoListNextMono(p->list);
+    Mono *firstMono = MonoListNextMono(p->list);
 
-    if (mono->exp == 0) {
-      return PolyClone(&(mono->p));
+    if (firstMono->exp == 0) {
+      return PolyClone(&(firstMono->p));
     } else {
       return PolyZero();
     }

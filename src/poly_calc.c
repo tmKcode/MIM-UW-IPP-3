@@ -68,27 +68,6 @@ static void ProcessOneArgCommand(char *line, ssize_t lineLength,
       PolyStackPush(stack, negTop);
     } else if (CommandIsDeg(line)) {
       printf("%d\n", PolyDeg(&top));
-    } else if (CommandIsDegBy(line)) {
-      bool error;
-      size_t idx = CommandDegByIdx(line, lineLength, &error);
-
-      if (error) {
-        PrintError(i, "DEG BY WRONG VARIABLE");
-      } else {
-        printf("%d\n", PolyDegBy(&top, idx));
-      }
-    } else if (CommandIsAt(line)) {
-      bool error;
-      poly_coeff_t x = CommandAtX(line, lineLength, &error);
-
-      if (error) {
-        PrintError(i, "AT WRONG VALUE");
-      } else {
-        Poly res = PolyAt(&top, x);
-
-        PolyStackPop(stack);
-        PolyStackPush(stack, res);
-      }
     } else if (CommandIsPrint(line)) {
       PrintPoly(&top);
       printf("\n");
@@ -139,8 +118,34 @@ void CalcStart() {
       if (LineIsCommand(newLine, lineLength)) {
         if (CommandIsZero(newLine)) {
           PolyStackPush(&stack, PolyZero());
+        } else if (CommandIsDegBy(newLine)) {
+          bool error;
+          size_t idx = CommandDegByIdx(newLine, lineLength, &error);
 
-          printf("Push %zu\n", stack.top);
+          if (error) {
+            PrintError(i, "DEG BY WRONG VARIABLE");
+          } else if (PolyStackIsEmpty(&stack)) {
+            PrintError(i, "STACK UNDERFLOW");
+          } else {
+            Poly top = PolyStackPeek(&stack);
+
+            printf("%d\n", PolyDegBy(&top, idx));
+          }
+        } else if (CommandIsAt(newLine)) {
+          bool error;
+          poly_coeff_t x = CommandAtX(newLine, lineLength, &error);
+
+          if (error) {
+            PrintError(i, "AT WRONG VALUE");
+          } else if (PolyStackIsEmpty(&stack)) {
+            PrintError(i, "STACK UNDERFLOW");
+          } else {
+            Poly top = PolyStackPeek(&stack);
+            Poly res = PolyAt(&top, x);
+
+            PolyStackPop(&stack);
+            PolyStackPush(&stack, res);
+          }
         } else if (CommandIsOneArg(newLine)) {
           if (PolyStackIsEmpty(&stack)) {
             PrintError(i, "STACK UNDERFLOW");
@@ -162,9 +167,14 @@ void CalcStart() {
 
         if (!PolyParse(newLine, &endptr, &p)) {
           PrintError(i, "WRONG POLY");
-
+        } else if (*endptr != '\0') {
+          PolyNormalizeConstants(&p);
+          PolyRemoveZeros(&p);
           PolyDestroy(&p);
-        } else {
+
+          PrintError(i, "WRONG POLY");
+        }
+        else {
           PolyNormalizeConstants(&p);
           PolyRemoveZeros(&p);
 
@@ -173,8 +183,6 @@ void CalcStart() {
       }
     }
 
-    free(newLine);
-    bufferLength = 0;
 
     errno = 0;
     lineLength = getline(&newLine, &bufferLength, stdin);
