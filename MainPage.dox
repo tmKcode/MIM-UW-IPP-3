@@ -3,8 +3,7 @@
 
 ### Opis biblioteki
 
-Bibloteka służy do wykonywania operacji na wielomianach rzadkich wielu zmiennych
-o współczynnikach całkowitych.
+Biblioteka implementuje aplikację terminalową - kalkulator dla wielomianów rzadkich wielu zmiennych.
 
 ### Definicja wielomianu
 
@@ -29,4 +28,31 @@ Biblioteka implementuje podstawowe operacje na wielomianach, takie jak:
 dodawanie, odejmowanie, mnożenie,
 wyznaczanie stopnia oraz wyznaczanie wartości w punkcie.
 
+
+Klasa poly_calc implementuje terminalowy kalkulator wielomianów.
+
+Kalkulator wykonuje następujące polecenia:
+
+ZERO – wstawia na wierzchołek stosu wielomian tożsamościowo równy zeru;
+IS_COEFF – sprawdza, czy wielomian na wierzchołku stosu jest współczynnikiem – wypisuje na standardowe wyjście 0 lub 1;
+IS_ZERO – sprawdza, czy wielomian na wierzchołku stosu jest tożsamościowo równy zeru – wypisuje na standardowe wyjście 0 lub 1;
+CLONE – wstawia na stos kopię wielomianu z wierzchołka;
+ADD – dodaje dwa wielomiany z wierzchu stosu, usuwa je i wstawia na wierzchołek stosu ich sumę;
+MUL – mnoży dwa wielomiany z wierzchu stosu, usuwa je i wstawia na wierzchołek stosu ich iloczyn;
+NEG – neguje wielomian na wierzchołku stosu;
+SUB – odejmuje od wielomianu z wierzchołka wielomian pod wierzchołkiem, usuwa je i wstawia na wierzchołek stosu różnicę;
+IS_EQ – sprawdza, czy dwa wielomiany na wierzchu stosu są równe – wypisuje na standardowe wyjście 0 lub 1;
+DEG – wypisuje na standardowe wyjście stopień wielomianu (−1 dla wielomianu tożsamościowo równego zeru);
+DEG_BY idx – wypisuje na standardowe wyjście stopień wielomianu ze względu na zmienną o numerze idx (−1 dla wielomianu tożsamościowo równego zeru);
+AT x – wylicza wartość wielomianu w punkcie x, usuwa wielomian z wierzchołka i wstawia na stos wynik operacji;
+PRINT – wypisuje na standardowe wyjście wielomian z wierzchołka stosu;
+POP – usuwa wielomian z wierzchołka stosu.
+
+
+
+Kalkulator także pozwala na wstawianie wielomianów na stos w następującej formie:
+
+<współczynnik : poly_coeff_t> - wielomian będący współczynnikiem, liczbą całkowitą
+
+@f$\sum@f$(<wielomian : Poly>,<wykładnik : poly_exp_t>) - suma jednomianów, wielomian zgodny z tą definicją, wykładnik będący nieujemną liczbą całkowitą
 */
