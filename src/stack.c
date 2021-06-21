@@ -9,6 +9,16 @@
 #include "stack.h"
 
 /**
+ * Minimalny rozmiar stosu wielomianów.
+ */
+#define STACK_MINIMUM_CAPACITY 16
+
+/**
+ * Współczynnik, o który zmienia się rozmiar stosu.
+ */
+#define STACK_RESIZE_FACTOR 2
+
+/**
  * Sprawdza, czy alokacja została poprawnie wykonana.
  * Jeśli nie, zakańcza wykonywanie programu z kodem @f$1@f$.
  * @param[in] p : wskaźnik pod którym alokowano pamięć
@@ -116,7 +126,7 @@ void PolyStackPush(PolyStack *s, Poly p) {
 }
 
 void PolyStackDestroy(PolyStack *s) {
-  for (size_t i = s->top; i >= 0; i--) {
+  for (long i = s->top; i >= 0; i--) {
     PolyDestroy(&(s->array[i]));
   }
 

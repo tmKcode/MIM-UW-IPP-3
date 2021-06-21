@@ -15,16 +15,6 @@
 #include <stdlib.h>
 
 /**
- * Minimalny rozmiar stosu wielomianów.
- */
-#define STACK_MINIMUM_CAPACITY 16
-
-/**
- * Współczynnik, o który zmienia się rozmiar stosu.
- */
-#define STACK_RESIZE_FACTOR 2
-
-/**
  * To jest struktura przechowująca stos wielomianów.
  */
 typedef struct PolyStack {
@@ -53,14 +43,14 @@ PolyStack NewPolyStack();
  * @param[in] s : stos
  * @return rozmiar stosu
  */
-size_t PolyStackSize(PolyStack *s);
+size_t PolyStackSize(const PolyStack *s);
 
 /**
  * Sprawdza, czy stos s jest pusty.
  * @param[in] s : stos
  * @return Czy stos s jest pusty?
  */
-static inline bool PolyStackIsEmpty(PolyStack *s) {
+static inline bool PolyStackIsEmpty(const PolyStack *s) {
   return PolyStackSize(s) == 0;
 }
 
@@ -69,32 +59,32 @@ static inline bool PolyStackIsEmpty(PolyStack *s) {
  * @param[in] s : stos
  * @return wielomian na wierzchu stosu
  */
-Poly PolyStackPeek(PolyStack *s);
+Poly PolyStackPeek(const PolyStack *s);
 
 /**
  * Zwraca drugi od góry wielomian ze stosu s.
  * @param[in] s : stos
  * @return drugi od góry wielomian ze stosu
  */
-Poly PolyStackPeekSecond(PolyStack *s);
+Poly PolyStackPeekSecond(const PolyStack *s);
 
 /**
  * Usuwa wielomian na wierzchu ze stosu s.
  * Zwalnia zajętą przez niego pamięć.
- * @param[in] s : stos
+ * @param[in,out] s : stos
  */
 void PolyStackPop(PolyStack *s);
 
 /**
  * Wstawia wielomian p na wierzch stosu s.
- * @param[in] s : stos
+ * @param[in,out] s : stos
  * @param[in] p : wielomian
  */
 void PolyStackPush(PolyStack *s, Poly p);
 
 /**
  * Usuwa stos s.
- * @param[in] s : stos
+ * @param[in,out] s : stos
  */
 void PolyStackDestroy(PolyStack *s);
 
