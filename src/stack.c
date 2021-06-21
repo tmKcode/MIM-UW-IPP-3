@@ -63,7 +63,7 @@ static bool PolyStackShouldShrink(PolyStack *s) {
 
 /**
  * Zmniejsza stos s.
- * @param[in] s : stos
+ * @param[in,out] s : stos
  */
 static void PolyStackShrink(PolyStack *s) {
   assert(s);
@@ -96,7 +96,7 @@ static bool PolyStackShouldGrow(PolyStack *s) {
 
 /**
  * Zwiększa stos s.
- * @param[in] s : stos
+ * @param[in,out] s : stos
  */
 static void PolyStackGrow(PolyStack *s) {
   assert(s);
@@ -116,7 +116,7 @@ void PolyStackPush(PolyStack *s, Poly p) {
 }
 
 void PolyStackDestroy(PolyStack *s) {
-  for (int i = s->top; i >= 0; i--) {
+  for (size_t i = s->top; i >= 0; i--) {
     PolyDestroy(&(s->array[i]));
   }
 
