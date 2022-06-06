@@ -41,19 +41,19 @@ PolyStack NewPolyStack() {
   return s;
 }
 
-size_t PolyStackSize(PolyStack *s) {
+size_t PolyStackSize(const PolyStack *s) {
   assert(s);
 
   return s->top + 1;
 }
 
-Poly PolyStackPeek(PolyStack *s) {
+Poly PolyStackPeek(const PolyStack *s) {
   assert(!PolyStackIsEmpty(s));
 
   return s->array[s->top];
 }
 
-Poly PolyStackPeekSecond(PolyStack *s) {
+Poly PolyStackPeekSecond(const PolyStack *s) {
   assert(PolyStackSize(s) >= 2);
 
   return s->array[s->top - 1];
